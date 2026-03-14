@@ -1,5 +1,6 @@
 // src/api/project.ts
 import { apiClient } from "@/lib/fetcher";
+import { Pagination } from "../utils";
 
 export interface ProjectFeature {
   description: string;
@@ -71,9 +72,9 @@ export interface ProjectListParams {
 }
 
 export interface PaginatedResponse<T> {
-  count: number;
-  next: string | null;
-  previous: string | null;
+ status: boolean;
+   message: string;
+   pagination: Pagination;
   results: T[];
 }
 

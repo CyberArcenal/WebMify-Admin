@@ -1,5 +1,6 @@
 // src/api/testimonial.ts
 import { apiClient } from "@/lib/fetcher";
+import { Pagination } from "../utils";
 
 export interface Testimonial {
   id: number;
@@ -32,9 +33,9 @@ export interface TestimonialListParams {
 }
 
 export interface PaginatedResponse<T> {
-  count: number;
-  next: string | null;
-  previous: string | null;
+status: boolean;
+  message: string;
+  pagination: Pagination;
   results: T[];
 }
 

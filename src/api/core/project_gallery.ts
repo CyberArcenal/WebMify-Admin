@@ -1,5 +1,6 @@
 // src/api/project_techstack.ts
 import { apiClient } from "@/lib/fetcher";
+import { Pagination } from "../utils";
 
 export interface ProjectTechStack {
   id: number;
@@ -22,9 +23,9 @@ export interface ProjectTechStackCreateData {
 export type ProjectTechStackUpdateData = Partial<Omit<ProjectTechStackCreateData, 'project'>>;
 
 export interface PaginatedResponse<T> {
-  count: number;
-  next: string | null;
-  previous: string | null;
+status: boolean;
+  message: string;
+  pagination: Pagination;
   results: T[];
 }
 

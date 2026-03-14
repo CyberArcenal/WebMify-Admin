@@ -1,5 +1,6 @@
 // src/api/email_template.ts
 import { apiClient } from "@/lib/fetcher";
+import { Pagination } from "../utils";
 
 export interface EmailTemplate {
   id: number;
@@ -25,9 +26,9 @@ export interface EmailTemplateListParams {
 }
 
 export interface PaginatedResponse<T> {
-  count: number;
-  next: string | null;
-  previous: string | null;
+  status: boolean;
+    message: string;
+    pagination: Pagination;
   results: T[];
 }
 

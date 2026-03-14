@@ -1,5 +1,6 @@
 // src/api/category.ts
 import { apiClient } from "@/lib/fetcher";
+import { Pagination } from "../utils";
 
 export interface Category {
   updated_at: string | Date | null | undefined;
@@ -28,9 +29,9 @@ export interface CategoryListParams {
 }
 
 export interface PaginatedResponse<T> {
-  count: number;
-  next: string | null;
-  previous: string | null;
+  status: boolean;
+    message: string;
+    pagination: Pagination;
   results: T[];
 }
 

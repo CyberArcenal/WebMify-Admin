@@ -1,5 +1,6 @@
 // src/api/education.ts
 import { apiClient } from "@/lib/fetcher";
+import { Pagination } from "../utils";
 
 export interface Education {
   id: number;
@@ -36,9 +37,9 @@ export interface EducationListParams {
 }
 
 export interface PaginatedResponse<T> {
-  count: number;
-  next: string | null;
-  previous: string | null;
+  status: boolean;
+    message: string;
+    pagination: Pagination;
   results: T[];
 }
 

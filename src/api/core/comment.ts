@@ -1,5 +1,6 @@
 // src/api/comment.ts
 import { apiClient } from "@/lib/fetcher";
+import { Pagination } from "../utils";
 
 export interface CommentAuthor {
   id: number | null;
@@ -49,9 +50,9 @@ export interface CommentListParams {
 }
 
 export interface PaginatedResponse<T> {
-  count: number;
-  next: string | null;
-  previous: string | null;
+  status: boolean;
+    message: string;
+    pagination: Pagination;
   results: T[];
 }
 

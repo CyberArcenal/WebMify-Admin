@@ -1,5 +1,6 @@
 // src/api/contact_message.ts
 import { apiClient } from "@/lib/fetcher";
+import { Pagination } from "../utils";
 
 export interface ContactMessage {
   id: number;
@@ -28,9 +29,9 @@ export interface ContactMessageListParams {
 }
 
 export interface PaginatedResponse<T> {
-  count: number;
-  next: string | null;
-  previous: string | null;
+  status: boolean;
+    message: string;
+    pagination: Pagination;
   results: T[];
 }
 
