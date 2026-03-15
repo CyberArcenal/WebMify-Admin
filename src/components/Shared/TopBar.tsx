@@ -98,7 +98,7 @@ const TopBar: React.FC<TopBarProps> = ({ toggleSidebar }) => {
           <button
             onClick={toggleSidebar}
             aria-label="Toggle menu"
-            className="p-2 rounded-lg hover:bg-[var(--card-secondary-bg)] text-[var(--sidebar-text)] transition-all duration-200 z-99"
+            className="p-2 rounded-lg hover:bg-[var(--card-secondary-bg)] text-[var(--sidebar-text)] transition-all duration-200 z-29"
           >
             <Menu className="icon-md" />
           </button>
@@ -170,7 +170,7 @@ const TopBar: React.FC<TopBarProps> = ({ toggleSidebar }) => {
         </div>
 
         {/* Right side: notifications */}
-        <div className="flex items-center gap-md">
+        <div className="flex items-center gap-md hidden">
           <div className="relative">
             <button
               onClick={() => setIsNotificationOpen(!isNotificationOpen)}

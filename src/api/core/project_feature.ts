@@ -26,65 +26,109 @@ export interface ProjectFeatureListParams {
 
 export interface PaginatedResponse<T> {
   status: boolean;
-    message: string;
-    pagination: Pagination;
+  message: string;
+  pagination: Pagination;
   results: T[];
 }
 
 class ProjectFeatureAPI {
-  private basePath = '/api/v2/portfolio/projects/';
+  private basePath = "/api/v2/portfolio/projects/";
 
-  async list(projectId: number, params?: { page?: number; page_size?: number }): Promise<PaginatedResponse<ProjectFeature>> {
+  async list(params?: {
+    project_id?: number;
+    page?: number;
+    page_size?: number;
+  }): Promise<PaginatedResponse<ProjectFeature>> {
     try {
-      const response = await apiClient.get<PaginatedResponse<ProjectFeature>>(`${this.basePath}${projectId}/features/`, { params });
+      const response = await apiClient.get<PaginatedResponse<ProjectFeature>>(
+        `${this.basePath}features/`,
+        { params },
+      );
       return response.data;
     } catch (error: any) {
-      throw new Error(error.response?.data?.detail || 'Failed to fetch project features');
+      throw new Error(
+        error.response?.data?.detail || "Failed to fetch project features",
+      );
     }
   }
 
-  async get(projectId: number, id: number): Promise<ProjectFeature> {
+  async get(id: number): Promise<ProjectFeature> {
     try {
-      const response = await apiClient.get<ProjectFeature>(`${this.basePath}${projectId}/features/${id}/`);
-      return response.data;
+      const response = await apiClient.get<{
+        status: boolean;
+        message: string;
+        result: ProjectFeature;
+      }>(`${this.basePath}features/${id}/`);
+      return response.data.result;
     } catch (error: any) {
-      throw new Error(error.response?.data?.detail || 'Failed to fetch project feature');
+      throw new Error(
+        error.response?.data?.detail || "Failed to fetch project feature",
+      );
     }
   }
 
-  async create(projectId: number, data: Omit<ProjectFeatureCreateData, 'project'>): Promise<ProjectFeature> {
+  async create(
+    projectId: number,
+    data: Omit<ProjectFeatureCreateData, "project">,
+  ): Promise<ProjectFeature> {
     try {
       const payload = { ...data, project: projectId };
-      const response = await apiClient.post<ProjectFeature>(`${this.basePath}${projectId}/features/`, payload);
-      return response.data;
+      const response = await apiClient.post<{
+        status: boolean;
+        message: string;
+        result: ProjectFeature;
+      }>(`${this.basePath}features/`, payload);
+      return response.data.result;
     } catch (error: any) {
-      throw new Error(error.response?.data?.detail || 'Failed to create project feature');
+      throw new Error(
+        error.response?.data?.detail || "Failed to create project feature",
+      );
     }
   }
 
-  async update(projectId: number, id: number, data: ProjectFeatureUpdateData): Promise<ProjectFeature> {
+  async update(
+    id: number,
+    data: ProjectFeatureUpdateData,
+  ): Promise<ProjectFeature> {
     try {
-      const response = await apiClient.put<ProjectFeature>(`${this.basePath}${projectId}/features/${id}/`, data);
-      return response.data;
+      const response = await apiClient.put<{
+        status: boolean;
+        message: string;
+        result: ProjectFeature;
+      }>(`${this.basePath}features/${id}/`, data);
+      return response.data.result;
     } catch (error: any) {
-      throw new Error(error.response?.data?.detail || 'Failed to update project feature');
+      throw new Error(
+        error.response?.data?.detail || "Failed to update project feature",
+      );
     }
   }
 
-  async patch(projectId: number, id: number, data: ProjectFeatureUpdateData): Promise<ProjectFeature> {
+  async patch(
+    id: number,
+    data: ProjectFeatureUpdateData,
+  ): Promise<ProjectFeature> {
     try {
-      const response = await apiClient.patch<ProjectFeature>(`${this.basePath}${projectId}/features/${id}/`, data);
-      return response.data;
+      const response = await apiClient.patch<{
+        status: boolean;
+        message: string;
+        result: ProjectFeature;
+      }>(`${this.basePath}features/${id}/`, data);
+      return response.data.result;
     } catch (error: any) {
-      throw new Error(error.response?.data?.detail || 'Failed to patch project feature');
+      throw new Error(
+        error.response?.data?.detail || "Failed to patch project feature",
+      );
     }
   }
 
-  async delete(projectId: number, id: number): Promise<void> {
+  async delete(id: number): Promise<void> {
     try {
-      await apiClient.delete(`${this.basePath}${projectId}/features/${id}/`);
+      await apiClient.delete(`${this.basePath}features/${id}/`);
     } catch (error: any) {
-      throw new Error(error.response?.data?.detail || 'Failed to delete project feature');
+      throw new Error(
+        error.response?.data?.detail || "Failed to delete project feature",
+      );
     }
   }
 }

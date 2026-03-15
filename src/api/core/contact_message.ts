@@ -30,8 +30,8 @@ export interface ContactMessageListParams {
 
 export interface PaginatedResponse<T> {
   status: boolean;
-    message: string;
-    pagination: Pagination;
+  message: string;
+  pagination: Pagination;
   results: T[];
 }
 
@@ -49,8 +49,10 @@ class ContactMessageAPI {
 
   async get(id: number): Promise<ContactMessage> {
     try {
-      const response = await apiClient.get<ContactMessage>(`${this.basePath}${id}/`);
-      return response.data;
+      const response = await apiClient.get<{ status: boolean; message: string; result: ContactMessage }>(
+        `${this.basePath}${id}/`
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to fetch contact message');
     }
@@ -58,8 +60,11 @@ class ContactMessageAPI {
 
   async create(data: ContactMessageCreateData): Promise<ContactMessage> {
     try {
-      const response = await apiClient.post<ContactMessage>(this.basePath, data);
-      return response.data;
+      const response = await apiClient.post<{ status: boolean; message: string; result: ContactMessage }>(
+        this.basePath,
+        data
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to send message');
     }
@@ -67,8 +72,11 @@ class ContactMessageAPI {
 
   async update(id: number, data: ContactMessageUpdateData): Promise<ContactMessage> {
     try {
-      const response = await apiClient.put<ContactMessage>(`${this.basePath}${id}/`, data);
-      return response.data;
+      const response = await apiClient.put<{ status: boolean; message: string; result: ContactMessage }>(
+        `${this.basePath}${id}/`,
+        data
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to update message');
     }
@@ -76,8 +84,11 @@ class ContactMessageAPI {
 
   async patch(id: number, data: ContactMessageUpdateData): Promise<ContactMessage> {
     try {
-      const response = await apiClient.patch<ContactMessage>(`${this.basePath}${id}/`, data);
-      return response.data;
+      const response = await apiClient.patch<{ status: boolean; message: string; result: ContactMessage }>(
+        `${this.basePath}${id}/`,
+        data
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to patch message');
     }

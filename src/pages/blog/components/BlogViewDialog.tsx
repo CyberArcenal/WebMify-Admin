@@ -74,19 +74,24 @@ const BlogViewDialog: React.FC<BlogViewDialogProps> = ({
               </div>
             </div>
             <div className="flex gap-2">
-              <span
-                className={`px-2 py-1 rounded-full text-xs font-medium ${
-                  blog.status === "published"
-                    ? "bg-green-100 text-green-700"
-                    : "bg-yellow-100 text-yellow-700"
-                }`}
-              >
-                {blog.status_display}
-              </span>
-              {blog.featured && (
-                <span className="px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700 flex items-center gap-1">
-                  <Star className="w-3 h-3" /> Featured
+              <div>
+                <span
+                  className={`px-2 py-1 rounded-full text-xs font-medium ${
+                    blog.status === "published"
+                      ? "bg-green-100 text-green-700"
+                      : "bg-yellow-100 text-yellow-700"
+                  }`}
+                >
+                  {blog.status_display}
                 </span>
+              </div>
+
+              {blog.featured && (
+                <div>
+                  <span className="px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700 flex items-center gap-1">
+                    <Star className="w-3 h-3" /> Featured
+                  </span>
+                </div>
               )}
               {onEdit && (
                 <Button

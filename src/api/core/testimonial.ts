@@ -21,6 +21,7 @@ export interface TestimonialCreateData {
   rating?: number;
   author_image?: File | null;
   featured?: boolean;
+  approved?: boolean;
 }
 
 export type TestimonialUpdateData = Partial<TestimonialCreateData>;
@@ -33,7 +34,7 @@ export interface TestimonialListParams {
 }
 
 export interface PaginatedResponse<T> {
-status: boolean;
+  status: boolean;
   message: string;
   pagination: Pagination;
   results: T[];
@@ -53,8 +54,10 @@ class TestimonialAPI {
 
   async get(id: number): Promise<Testimonial> {
     try {
-      const response = await apiClient.get<Testimonial>(`${this.basePath}${id}/`);
-      return response.data;
+      const response = await apiClient.get<{ status: boolean; message: string; result: Testimonial }>(
+        `${this.basePath}${id}/`
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to fetch testimonial');
     }
@@ -72,10 +75,12 @@ class TestimonialAPI {
           }
         }
       });
-      const response = await apiClient.post<Testimonial>(this.basePath, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      return response.data;
+      const response = await apiClient.post<{ status: boolean; message: string; result: Testimonial }>(
+        this.basePath,
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } }
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to create testimonial');
     }
@@ -93,10 +98,12 @@ class TestimonialAPI {
           }
         }
       });
-      const response = await apiClient.put<Testimonial>(`${this.basePath}${id}/`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      return response.data;
+      const response = await apiClient.put<{ status: boolean; message: string; result: Testimonial }>(
+        `${this.basePath}${id}/`,
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } }
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to update testimonial');
     }
@@ -114,10 +121,12 @@ class TestimonialAPI {
           }
         }
       });
-      const response = await apiClient.patch<Testimonial>(`${this.basePath}${id}/`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      return response.data;
+      const response = await apiClient.patch<{ status: boolean; message: string; result: Testimonial }>(
+        `${this.basePath}${id}/`,
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } }
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to patch testimonial');
     }

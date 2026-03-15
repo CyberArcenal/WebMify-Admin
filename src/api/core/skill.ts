@@ -33,9 +33,9 @@ export interface SkillListParams {
 }
 
 export interface PaginatedResponse<T> {
- status: boolean;
-   message: string;
-   pagination: Pagination;
+  status: boolean;
+  message: string;
+  pagination: Pagination;
   results: T[];
 }
 
@@ -53,8 +53,10 @@ class SkillAPI {
 
   async get(id: number): Promise<Skill> {
     try {
-      const response = await apiClient.get<Skill>(`${this.basePath}${id}/`);
-      return response.data;
+      const response = await apiClient.get<{ status: boolean; message: string; result: Skill }>(
+        `${this.basePath}${id}/`
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to fetch skill');
     }
@@ -62,8 +64,11 @@ class SkillAPI {
 
   async create(data: SkillCreateData): Promise<Skill> {
     try {
-      const response = await apiClient.post<Skill>(this.basePath, data);
-      return response.data;
+      const response = await apiClient.post<{ status: boolean; message: string; result: Skill }>(
+        this.basePath,
+        data
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to create skill');
     }
@@ -71,8 +76,11 @@ class SkillAPI {
 
   async update(id: number, data: SkillCreateData): Promise<Skill> {
     try {
-      const response = await apiClient.put<Skill>(`${this.basePath}${id}/`, data);
-      return response.data;
+      const response = await apiClient.put<{ status: boolean; message: string; result: Skill }>(
+        `${this.basePath}${id}/`,
+        data
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to update skill');
     }
@@ -80,8 +88,11 @@ class SkillAPI {
 
   async patch(id: number, data: SkillUpdateData): Promise<Skill> {
     try {
-      const response = await apiClient.patch<Skill>(`${this.basePath}${id}/`, data);
-      return response.data;
+      const response = await apiClient.patch<{ status: boolean; message: string; result: Skill }>(
+        `${this.basePath}${id}/`,
+        data
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to patch skill');
     }

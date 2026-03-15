@@ -6,7 +6,7 @@ import Button from "../../../components/UI/Button";
 import { dialogs } from "../../../utils/dialogs";
 import { Upload, X } from "lucide-react";
 import blogAPI, { Blog, BlogCreateData } from "@/api/core/blog";
-import categoryAPI from "@/api/core/category";
+import CategoryMultiSelect from "@/components/Selects/Muti/Category";
 
 interface BlogFormDialogProps {
   isOpen: boolean;
@@ -37,9 +37,6 @@ const BlogFormDialog: React.FC<BlogFormDialogProps> = ({
 }) => {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [categories, setCategories] = useState<{ id: number; name: string }[]>(
-    [],
-  );
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const {
@@ -63,19 +60,7 @@ const BlogFormDialog: React.FC<BlogFormDialogProps> = ({
 
   const title = watch("title");
   const slug = watch("slug");
-
-  // Fetch categories for dropdown
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await categoryAPI.list({ page_size: 100 });
-        setCategories(response.results);
-      } catch (err) {
-        console.error("Failed to load categories", err);
-      }
-    };
-    fetchCategories();
-  }, []);
+  const selectedCategories = watch("categories"); // current selected category IDs
 
   // Auto-generate slug from title (only in add mode or if slug is empty)
   useEffect(() => {
@@ -390,25 +375,10 @@ const BlogFormDialog: React.FC<BlogFormDialogProps> = ({
               >
                 Categories
               </label>
-              <select
-                multiple
-                {...register("categories")}
-                className="compact-input w-full border rounded-md h-24"
-                style={{
-                  backgroundColor: "var(--card-bg)",
-                  borderColor: "var(--border-color)",
-                  color: "var(--sidebar-text)",
-                }}
-              >
-                {categories?.map((cat) => (
-                  <option key={cat.id} value={cat.id}>
-                    {cat.name}
-                  </option>
-                ))}
-              </select>
-              <p className="text-xs text-[var(--text-secondary)] mt-1">
-                Hold Ctrl/Cmd to select multiple
-              </p>
+              <CategoryMultiSelect
+                value={selectedCategories}
+                onChange={(ids) => setValue("categories", ids)}
+              />
             </div>
           </div>
         </div>

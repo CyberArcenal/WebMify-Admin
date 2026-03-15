@@ -15,6 +15,10 @@ import CategoryTable from "./components/CategoryTable";
 import CategoryViewDialog from "./components/CategoryViewDialog";
 import CategoryFormDialog from "./components/CategoryFormDialog";
 import categoryAPI from "@/api/core/category";
+import { useBlogView } from "../blog/hooks/useBlogView";
+import BlogViewDialog from "../blog/components/BlogViewDialog";
+import BlogFormDialog from "../blog/components/BlogFormDialog";
+import useBlogForm from "../blog/hooks/useBlogForm";
 
 const CategoriesPage: React.FC = () => {
   const {
@@ -41,6 +45,8 @@ const CategoriesPage: React.FC = () => {
 
   const formDialog = useCategoryForm();
   const viewDialog = useCategoryView();
+  const blogFormDialog = useBlogForm();
+  const blogViewDialog = useBlogView();
 
   const [showFilters, setShowFilters] = useState(false);
 
@@ -362,6 +368,14 @@ const CategoriesPage: React.FC = () => {
         onClose={formDialog.close}
         onSuccess={reload}
       />
+      <BlogFormDialog
+        isOpen={blogFormDialog.isOpen}
+        mode={blogFormDialog.mode}
+        blogId={blogFormDialog.blogId}
+        initialData={blogFormDialog.initialData}
+        onClose={blogFormDialog.close}
+        onSuccess={reload}
+      />
 
       <CategoryViewDialog
         isOpen={viewDialog.isOpen}
@@ -370,8 +384,28 @@ const CategoriesPage: React.FC = () => {
         loading={viewDialog.loading}
         loadingBlogs={viewDialog.loadingBlogs}
         onClose={viewDialog.close}
-        onEdit={formDialog.openEdit}
+        onEdit={(category) => {
+          formDialog.openEdit(category);
+          viewDialog.close();
+        }}
         onFetchBlogs={viewDialog.fetchBlogs}
+        onBlogView={(blog) => {
+          viewDialog.close();
+          blogViewDialog.open(blog.id);
+        }}
+      />
+      <BlogViewDialog
+        isOpen={blogViewDialog.isOpen}
+        blog={blogViewDialog.blog}
+        comments={blogViewDialog.comments}
+        loading={blogViewDialog.loading}
+        loadingComments={blogViewDialog.loadingComments}
+        onClose={blogViewDialog.close}
+        onEdit={(blog) => {
+          blogFormDialog.openEdit(blog);
+          blogViewDialog.close();
+        }}
+        onFetchComments={blogViewDialog.fetchComments}
       />
     </div>
   );

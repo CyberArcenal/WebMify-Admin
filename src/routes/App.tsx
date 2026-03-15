@@ -7,6 +7,21 @@ import ProtectedRoute from "../app/ProtectedRoute";
 import LoginPage from "@/pages/auth/login";
 import CategoriesPage from "@/pages/categories";
 import BlogsPage from "@/pages/blog";
+import CommentsPage from "@/pages/comments";
+import ProjectsPage from "@/pages/projects";
+import EducationPage from "@/pages/education";
+import ContactMessagesPage from "@/pages/contact-messages";
+import EmailTemplatesPage from "@/pages/email-templates";
+import ExperiencePage from "@/pages/experience";
+import ProfilePage from "@/pages/profile";
+import ProjectFeaturesPage from "@/pages/project-features";
+import ProjectGalleryPage from "@/pages/project-gallery";
+import ProjectTechStacksPage from "@/pages/project-techstacks";
+import SkillsPage from "@/pages/skills";
+import StatsPage from "@/pages/stats";
+import SubscribersPage from "@/pages/subscribers";
+import TestimonialsPage from "@/pages/testimonials";
+import UsersPage from "@/pages/users";
 
 // Placeholder components for pages not yet implemented
 const PlaceholderPage = ({ name }: { name: string }) => (
@@ -32,32 +47,31 @@ function App() {
           {/* Blog */}
           <Route path="blog" element={<BlogsPage />} />
           <Route path="blog/categories" element={<CategoriesPage />} />
-          <Route path="blog/comments" element={<PlaceholderPage name="Blog Comments" />} />
+          <Route path="blog/comments" element={<CommentsPage/>} />
 
           {/* Projects */}
-          <Route path="projects" element={<PlaceholderPage name="Projects" />} />
-          <Route path="projects/features" element={<PlaceholderPage name="Project Features" />} />
-          <Route path="projects/gallery" element={<PlaceholderPage name="Project Gallery" />} />
-          <Route path="projects/tech-stack" element={<PlaceholderPage name="Tech Stack" />} />
+          <Route path="projects" element={<ProjectsPage/>} />
+          <Route path="projects/features" element={<ProjectFeaturesPage/>} />
+          <Route path="projects/gallery" element={<ProjectGalleryPage/>} />
+          <Route path="projects/tech-stack" element={<ProjectTechStacksPage/>} />
 
           {/* Testimonials */}
-          <Route path="testimonials" element={<PlaceholderPage name="Testimonials" />} />
+          <Route path="testimonials" element={<TestimonialsPage/>} />
 
           {/* Profile & Skills */}
-          <Route path="profile" element={<PlaceholderPage name="Profile" />} />
-          <Route path="skills" element={<PlaceholderPage name="Skills" />} />
-          <Route path="experience" element={<PlaceholderPage name="Experience" />} />
-          <Route path="education" element={<PlaceholderPage name="Education" />} />
+          <Route path="profile" element={<ProfilePage/>} />
+          <Route path="skills" element={<SkillsPage/>} />
+          <Route path="experience" element={<ExperiencePage/>} />
+          <Route path="education" element={<EducationPage/>} />
 
           {/* Engagement */}
-          <Route path="subscribers" element={<PlaceholderPage name="Subscribers" />} />
-          <Route path="contact-messages" element={<PlaceholderPage name="Contact Messages" />} />
+          <Route path="subscribers" element={<SubscribersPage/>} />
+          <Route path="contact-messages" element={<ContactMessagesPage/>} />
 
           {/* System */}
-          <Route path="stats" element={<PlaceholderPage name="Statistics" />} />
-          <Route path="email-templates" element={<PlaceholderPage name="Email Templates" />} />
-          <Route path="users" element={<PlaceholderPage name="Users" />} />
-          <Route path="audit" element={<PlaceholderPage name="Audit Trail" />} />
+          <Route path="stats" element={<StatsPage />} />
+          <Route path="email-templates" element={<EmailTemplatesPage/>} />
+          <Route path="users" element={<UsersPage/>} />
 
           {/* 404 */}
           <Route path="*" element={<PageNotFound />} />

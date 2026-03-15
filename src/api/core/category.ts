@@ -30,8 +30,8 @@ export interface CategoryListParams {
 
 export interface PaginatedResponse<T> {
   status: boolean;
-    message: string;
-    pagination: Pagination;
+  message: string;
+  pagination: Pagination;
   results: T[];
 }
 
@@ -49,8 +49,10 @@ class CategoryAPI {
 
   async get(id: number): Promise<Category> {
     try {
-      const response = await apiClient.get<Category>(`${this.basePath}${id}/`);
-      return response.data;
+      const response = await apiClient.get<{ status: boolean; message: string; result: Category }>(
+        `${this.basePath}${id}/`
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to fetch category');
     }
@@ -58,8 +60,11 @@ class CategoryAPI {
 
   async create(data: CategoryCreateData): Promise<Category> {
     try {
-      const response = await apiClient.post<Category>(this.basePath, data);
-      return response.data;
+      const response = await apiClient.post<{ status: boolean; message: string; result: Category }>(
+        this.basePath,
+        data
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to create category');
     }
@@ -67,8 +72,11 @@ class CategoryAPI {
 
   async update(id: number, data: CategoryCreateData): Promise<Category> {
     try {
-      const response = await apiClient.put<Category>(`${this.basePath}${id}/`, data);
-      return response.data;
+      const response = await apiClient.put<{ status: boolean; message: string; result: Category }>(
+        `${this.basePath}${id}/`,
+        data
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to update category');
     }
@@ -76,8 +84,11 @@ class CategoryAPI {
 
   async patch(id: number, data: CategoryUpdateData): Promise<Category> {
     try {
-      const response = await apiClient.patch<Category>(`${this.basePath}${id}/`, data);
-      return response.data;
+      const response = await apiClient.patch<{ status: boolean; message: string; result: Category }>(
+        `${this.basePath}${id}/`,
+        data
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to patch category');
     }

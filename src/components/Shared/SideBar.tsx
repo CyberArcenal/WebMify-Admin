@@ -149,7 +149,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
         { path: "/stats", name: "Statistics", icon: BarChart3 },
         { path: "/email-templates", name: "Email Templates", icon: MailOpen },
         { path: "/users", name: "Users", icon: Users },
-        { path: "/audit", name: "Audit Trail", icon: Shield },
       ],
     },
   ];
@@ -158,7 +157,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
     .map((item) => {
       if (item.children) {
         const children = item.children.filter(
-          (child) => !(child.path === "/users"), // optional filter
+          (child) => !(child.path === "/users1"), // optional filter
         );
         return { ...item, children };
       }
@@ -356,7 +355,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
         <div className="flex items-center gap-3">
           <div className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center overflow-hidden">
             <img
-              src={"./icon.png"}
+              src={"./logo.png"}
               alt="Portfolio Logo"
               className="h-full w-full object-cover"
             />
@@ -399,7 +398,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
       <div className="p-4 border-t border-[var(--sidebar-border)] text-center flex-shrink-0">
         {isOpen ? (
           <p className="text-xs text-[var(--sidebar-text)]">
-            {version} • © {new Date().getFullYear()} Portfolio
+            {version} • © {new Date().getFullYear()} {name}
           </p>
         ) : (
           <p className="text-xs text-[var(--sidebar-text)]">

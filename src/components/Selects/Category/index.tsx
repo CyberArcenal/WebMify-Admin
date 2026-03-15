@@ -1,16 +1,15 @@
-// src/renderer/components/Selects/Category/index.tsx
+// src/components/Selects/Category/index.tsx
 import React, { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { Search, ChevronDown, Tag, X } from "lucide-react";
-import type { Category } from "../../../api/core/category";
-import categoryAPI from "../../../api/core/category";
+import { Search, ChevronDown, Tag, X, Star } from "lucide-react";
+import categoryAPI, { Category } from "@/api/core/category";
 
 interface CategorySelectProps {
   value: number | null;
   onChange: (categoryId: number | null, category?: Category) => void;
   disabled?: boolean;
   placeholder?: string;
-  activeOnly?: boolean;
+  showFeaturedOnly?: boolean; // filter by featured
   className?: string;
 }
 
@@ -18,8 +17,8 @@ const CategorySelect: React.FC<CategorySelectProps> = ({
   value,
   onChange,
   disabled = false,
-  placeholder = "Category..",
-  activeOnly = true,
+  placeholder = "Select a category...",
+  showFeaturedOnly = false,
   className = "w-full max-w-md",
 }) => {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -42,17 +41,16 @@ const CategorySelect: React.FC<CategorySelectProps> = ({
     const loadCategories = async () => {
       setLoading(true);
       try {
-        const params: any = { sortBy: "name", sortOrder: "ASC", limit: 1000 };
-        if (activeOnly) params.isActive = true;
+        const params: any = {
+          page_size: 100,
+          sortBy: "name",
+          sortOrder: "asc",
+        };
+        if (showFeaturedOnly) params.featured = true;
 
-        const response = await categoryAPI.getAll(params);
-        if (response.status && response.data) {
-          const list = Array.isArray(response.data)
-            ? response.data
-            : response.data || [];
-          setCategories(list);
-          setFilteredCategories(list);
-        }
+        const response = await categoryAPI.list(params);
+        setCategories(response.results);
+        setFilteredCategories(response.results);
       } catch (error) {
         console.error("Failed to load categories:", error);
       } finally {
@@ -60,9 +58,9 @@ const CategorySelect: React.FC<CategorySelectProps> = ({
       }
     };
     loadCategories();
-  }, [activeOnly]);
+  }, [showFeaturedOnly]);
 
-  // Filter categories
+  // Filter categories by search term
   useEffect(() => {
     if (!searchTerm.trim()) {
       setFilteredCategories(categories);
@@ -70,7 +68,7 @@ const CategorySelect: React.FC<CategorySelectProps> = ({
     }
     const lower = searchTerm.toLowerCase();
     setFilteredCategories(
-      categories?.filter((cat) => cat.name.toLowerCase().includes(lower)),
+      categories.filter((cat) => cat.name.toLowerCase().includes(lower))
     );
   }, [searchTerm, categories]);
 
@@ -132,7 +130,7 @@ const CategorySelect: React.FC<CategorySelectProps> = ({
     onChange(null);
   };
 
-  const selectedCategory = categories?.find((c) => c.id === value);
+  const selectedCategory = categories.find((c) => c.id === value);
 
   return (
     <div className={`relative ${className}`}>
@@ -229,7 +227,7 @@ const CategorySelect: React.FC<CategorySelectProps> = ({
                 <input
                   ref={searchInputRef}
                   type="text"
-                  placeholder="Search..."
+                  placeholder="Search categories..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-8 pr-3 py-1.5 rounded text-sm"
@@ -244,14 +242,14 @@ const CategorySelect: React.FC<CategorySelectProps> = ({
 
             {/* Category list */}
             <div className="overflow-y-auto" style={{ maxHeight: "250px" }}>
-              {loading && categories?.length === 0 ? (
+              {loading && categories.length === 0 ? (
                 <div
                   className="p-3 text-center text-sm"
                   style={{ color: "var(--text-secondary)" }}
                 >
                   Loading...
                 </div>
-              ) : filteredcategories?.length === 0 ? (
+              ) : filteredCategories.length === 0 ? (
                 <div
                   className="p-3 text-center text-sm"
                   style={{ color: "var(--text-secondary)" }}
@@ -259,7 +257,7 @@ const CategorySelect: React.FC<CategorySelectProps> = ({
                   No categories found
                 </div>
               ) : (
-                filteredcategories?.map((category) => (
+                filteredCategories.map((category) => (
                   <button
                     key={category.id}
                     type="button"
@@ -283,19 +281,11 @@ const CategorySelect: React.FC<CategorySelectProps> = ({
                         >
                           {category.name}
                         </span>
-                        <span
-                          className="px-1.5 py-0.5 text-xs rounded-full flex-shrink-0"
-                          style={{
-                            backgroundColor: category.is_active
-                              ? "var(--status-success-bg)"
-                              : "var(--status-inactive-bg)",
-                            color: category.is_active
-                              ? "var(--status-success-text)"
-                              : "var(--status-inactive-text)",
-                          }}
-                        >
-                          {category.is_active ? "Active" : "Inactive"}
-                        </span>
+                        {category.featured && (
+                          <Star
+                            className="w-3 h-3 text-yellow-500 flex-shrink-0"
+                          />
+                        )}
                       </div>
                       {category.description && (
                         <div
@@ -311,7 +301,7 @@ const CategorySelect: React.FC<CategorySelectProps> = ({
               )}
             </div>
           </div>,
-          document.body,
+          document.body
         )}
     </div>
   );

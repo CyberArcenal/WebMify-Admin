@@ -27,7 +27,7 @@ export interface SubscriberListParams {
 }
 
 export interface PaginatedResponse<T> {
-status: boolean;
+  status: boolean;
   message: string;
   pagination: Pagination;
   results: T[];
@@ -47,8 +47,10 @@ class SubscriberAPI {
 
   async get(id: number): Promise<Subscriber> {
     try {
-      const response = await apiClient.get<Subscriber>(`${this.basePath}${id}/`);
-      return response.data;
+      const response = await apiClient.get<{ status: boolean; message: string; result: Subscriber }>(
+        `${this.basePath}${id}/`
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to fetch subscriber');
     }
@@ -56,8 +58,11 @@ class SubscriberAPI {
 
   async create(data: SubscriberCreateData): Promise<Subscriber> {
     try {
-      const response = await apiClient.post<Subscriber>('/api/v2/portfolio/subscribe/', data);
-      return response.data;
+      const response = await apiClient.post<{ status: boolean; message: string; result: Subscriber }>(
+        '/api/v2/portfolio/subscribe/',
+        data
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to subscribe');
     }
@@ -65,8 +70,11 @@ class SubscriberAPI {
 
   async update(id: number, data: SubscriberUpdateData): Promise<Subscriber> {
     try {
-      const response = await apiClient.put<Subscriber>(`${this.basePath}${id}/`, data);
-      return response.data;
+      const response = await apiClient.put<{ status: boolean; message: string; result: Subscriber }>(
+        `${this.basePath}${id}/`,
+        data
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to update subscriber');
     }
@@ -74,8 +82,11 @@ class SubscriberAPI {
 
   async patch(id: number, data: SubscriberUpdateData): Promise<Subscriber> {
     try {
-      const response = await apiClient.patch<Subscriber>(`${this.basePath}${id}/`, data);
-      return response.data;
+      const response = await apiClient.patch<{ status: boolean; message: string; result: Subscriber }>(
+        `${this.basePath}${id}/`,
+        data
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to patch subscriber');
     }

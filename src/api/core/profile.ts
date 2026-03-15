@@ -39,21 +39,17 @@ export type ProfileUpdateData = Partial<ProfileCreateData>;
 class ProfileAPI {
   private basePath = '/api/v2/portfolio/profile/';
 
-  /**
-   * Get profile (there should be only one).
-   */
   async get(): Promise<Profile> {
     try {
-      const response = await apiClient.get<Profile>(this.basePath);
-      return response.data;
+      const response = await apiClient.get<{ status: boolean; message: string; result: Profile }>(
+        this.basePath
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to fetch profile');
     }
   }
 
-  /**
-   * Create profile (admin only).
-   */
   async create(data: ProfileCreateData): Promise<Profile> {
     try {
       const formData = new FormData();
@@ -66,18 +62,17 @@ class ProfileAPI {
           }
         }
       });
-      const response = await apiClient.post<Profile>(this.basePath, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      return response.data;
+      const response = await apiClient.post<{ status: boolean; message: string; result: Profile }>(
+        this.basePath,
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } }
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to create profile');
     }
   }
 
-  /**
-   * Full update of profile (admin only).
-   */
   async update(id: number, data: ProfileCreateData): Promise<Profile> {
     try {
       const formData = new FormData();
@@ -90,18 +85,17 @@ class ProfileAPI {
           }
         }
       });
-      const response = await apiClient.put<Profile>(`${this.basePath}${id}/`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      return response.data;
+      const response = await apiClient.put<{ status: boolean; message: string; result: Profile }>(
+        `${this.basePath}${id}/`,
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } }
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to update profile');
     }
   }
 
-  /**
-   * Partial update of profile (admin only).
-   */
   async patch(id: number, data: ProfileUpdateData): Promise<Profile> {
     try {
       const formData = new FormData();
@@ -114,18 +108,17 @@ class ProfileAPI {
           }
         }
       });
-      const response = await apiClient.patch<Profile>(`${this.basePath}${id}/`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      return response.data;
+      const response = await apiClient.patch<{ status: boolean; message: string; result: Profile }>(
+        `${this.basePath}${id}/`,
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } }
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to patch profile');
     }
   }
 
-  /**
-   * Delete profile (admin only).
-   */
   async delete(id: number): Promise<void> {
     try {
       await apiClient.delete(`${this.basePath}${id}/`);
@@ -134,21 +127,17 @@ class ProfileAPI {
     }
   }
 
-  /**
-   * Get location info (from profile).
-   */
   async getLocation(): Promise<{ email: string; phone: string; address: string; coordinates: string; availability: string; }> {
     try {
-      const response = await apiClient.get('/api/v2/portfolio/location/');
-      return response.data;
+      const response = await apiClient.get<{ status: boolean; message: string; result: { email: string; phone: string; address: string; coordinates: string; availability: string; } }>(
+        '/api/v2/portfolio/location/'
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to fetch location');
     }
   }
 
-  /**
-   * Get social media links.
-   */
   async getSocialLinks(): Promise<{
     github_url: string;
     linkedin_url: string;
@@ -158,8 +147,10 @@ class ProfileAPI {
     youtube_url: string;
   }> {
     try {
-      const response = await apiClient.get('/api/v2/portfolio/social-links/');
-      return response.data.data;
+      const response = await apiClient.get<{ status: boolean; message: string; result: { github_url: string; linkedin_url: string; twitter_url: string; instagram_url: string; facebook_url: string; youtube_url: string; } }>(
+        '/api/v2/portfolio/social-links/'
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to fetch social links');
     }

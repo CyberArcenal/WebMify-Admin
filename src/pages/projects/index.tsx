@@ -9,12 +9,12 @@ import { showSuccess, showError } from "../../utils/notification";
 
 import useProjects, { type ProjectWithDetails } from "./hooks/useProjects";
 import FilterBar from "./components/FilterBar";
-import projectAPI from "../../api/project";
 import useProjectForm from "./hooks/useProjectForm";
 import { useProjectView } from "./hooks/useProjectView";
 import ProjectTable from "./components/ProjectTable";
 import ProjectViewDialog from "./components/ProjectViewDialog";
 import ProjectFormDialog from "./components/ProjectFormDialog";
+import projectAPI from "@/api/core/project";
 
 const ProjectsPage: React.FC = () => {
   const {

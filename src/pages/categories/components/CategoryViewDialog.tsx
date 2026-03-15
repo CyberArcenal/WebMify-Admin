@@ -25,6 +25,7 @@ interface CategoryViewDialogProps {
   onClose: () => void;
   onEdit?: (category: Category) => void;
   onFetchBlogs?: () => void;
+  onBlogView?: (blog: Blog) => void;
 }
 
 const CategoryViewDialog: React.FC<CategoryViewDialogProps> = ({
@@ -36,6 +37,7 @@ const CategoryViewDialog: React.FC<CategoryViewDialogProps> = ({
   onClose,
   onEdit,
   onFetchBlogs,
+  onBlogView,
 }) => {
   const [activeTab, setActiveTab] = useState<"overview" | "blogs">("overview");
 
@@ -71,16 +73,19 @@ const CategoryViewDialog: React.FC<CategoryViewDialogProps> = ({
               </div>
             </div>
             <div className="flex gap-2">
-              <span
-                className={`px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1 ${
-                  category.featured
-                    ? "bg-yellow-100 text-yellow-700"
-                    : "bg-gray-100 text-gray-700"
-                }`}
-              >
-                <Star className="w-3 h-3" />
-                {category.featured ? "Featured" : "Not Featured"}
-              </span>
+              <div>
+                <span
+                  className={`px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1 ${
+                    category.featured
+                      ? "bg-yellow-100 text-yellow-700"
+                      : "bg-gray-100 text-gray-700"
+                  }`}
+                >
+                  <Star className="w-3 h-3" />
+                  {category.featured ? "Featured" : "Not Featured"}
+                </span>
+              </div>
+
               {onEdit && (
                 <Button
                   variant="secondary"
@@ -241,13 +246,15 @@ const CategoryViewDialog: React.FC<CategoryViewDialogProps> = ({
                               {blog.views}
                             </td>
                             <td className="px-4 py-2 text-sm">
-                              <Link
-                                to={`/blog/${blog.id}`}
+                              <button
                                 className="text-[var(--accent-blue)] hover:underline flex items-center gap-1"
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onBlogView?.(blog);
+                                }}
                               >
                                 <Eye className="w-3 h-3" /> View
-                              </Link>
+                              </button>
                             </td>
                           </tr>
                         ))}

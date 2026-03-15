@@ -33,7 +33,7 @@ export interface UserCreateData {
   last_name?: string;
   phone_number?: string;
   user_type?: "viewer" | "customer" | "staff" | "manager" | "admin";
-  status?:"active" | "restricted" | "suspended" | "deleted";
+  status?: "active" | "restricted" | "suspended" | "deleted";
   is_active?: boolean;
   is_staff?: boolean;
   is_superuser?: boolean;
@@ -52,7 +52,7 @@ export interface UsersListParams {
 }
 
 export interface PaginatedResponse<T> {
-status: boolean;
+  status: boolean;
   message: string;
   pagination: Pagination;
   results: T[];
@@ -72,8 +72,10 @@ class UserAPI {
 
   async get(id: number): Promise<User> {
     try {
-      const response = await apiClient.get<User>(`${this.basePath}${id}/`);
-      return response.data;
+      const response = await apiClient.get<{ status: boolean; message: string; result: User }>(
+        `${this.basePath}${id}/`
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to fetch user');
     }
@@ -81,8 +83,11 @@ class UserAPI {
 
   async create(data: UserCreateData): Promise<User> {
     try {
-      const response = await apiClient.post<User>(this.basePath, data);
-      return response.data;
+      const response = await apiClient.post<{ status: boolean; message: string; result: User }>(
+        this.basePath,
+        data
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to create user');
     }
@@ -90,8 +95,11 @@ class UserAPI {
 
   async update(id: number, data: UserCreateData): Promise<User> {
     try {
-      const response = await apiClient.put<User>(`${this.basePath}${id}/`, data);
-      return response.data;
+      const response = await apiClient.put<{ status: boolean; message: string; result: User }>(
+        `${this.basePath}${id}/`,
+        data
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to update user');
     }
@@ -99,8 +107,11 @@ class UserAPI {
 
   async patch(id: number, data: UserUpdateData): Promise<User> {
     try {
-      const response = await apiClient.patch<User>(`${this.basePath}${id}/`, data);
-      return response.data;
+      const response = await apiClient.patch<{ status: boolean; message: string; result: User }>(
+        `${this.basePath}${id}/`,
+        data
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to patch user');
     }

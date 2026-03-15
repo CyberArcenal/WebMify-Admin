@@ -36,8 +36,8 @@ export interface ExperienceListParams {
 
 export interface PaginatedResponse<T> {
   status: boolean;
-    message: string;
-    pagination: Pagination;
+  message: string;
+  pagination: Pagination;
   results: T[];
 }
 
@@ -55,8 +55,10 @@ class ExperienceAPI {
 
   async get(id: number): Promise<Experience> {
     try {
-      const response = await apiClient.get<Experience>(`${this.basePath}${id}/`);
-      return response.data;
+      const response = await apiClient.get<{ status: boolean; message: string; result: Experience }>(
+        `${this.basePath}${id}/`
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to fetch experience');
     }
@@ -74,10 +76,12 @@ class ExperienceAPI {
           }
         }
       });
-      const response = await apiClient.post<Experience>(this.basePath, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      return response.data;
+      const response = await apiClient.post<{ status: boolean; message: string; result: Experience }>(
+        this.basePath,
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } }
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to create experience');
     }
@@ -95,10 +99,12 @@ class ExperienceAPI {
           }
         }
       });
-      const response = await apiClient.put<Experience>(`${this.basePath}${id}/`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      return response.data;
+      const response = await apiClient.put<{ status: boolean; message: string; result: Experience }>(
+        `${this.basePath}${id}/`,
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } }
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to update experience');
     }
@@ -116,10 +122,12 @@ class ExperienceAPI {
           }
         }
       });
-      const response = await apiClient.patch<Experience>(`${this.basePath}${id}/`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      return response.data;
+      const response = await apiClient.patch<{ status: boolean; message: string; result: Experience }>(
+        `${this.basePath}${id}/`,
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } }
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to patch experience');
     }

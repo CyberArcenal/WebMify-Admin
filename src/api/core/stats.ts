@@ -16,8 +16,10 @@ class StatsAPI {
 
   async get(): Promise<Stats> {
     try {
-      const response = await apiClient.get<Stats>(this.basePath);
-      return response.data;
+      const response = await apiClient.get<{ status: boolean; message: string; result: Stats }>(
+        this.basePath
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to fetch stats');
     }
@@ -25,8 +27,11 @@ class StatsAPI {
 
   async create(data: StatsCreateUpdateData): Promise<Stats> {
     try {
-      const response = await apiClient.post<Stats>(this.basePath, data);
-      return response.data;
+      const response = await apiClient.post<{ status: boolean; message: string; result: Stats }>(
+        this.basePath,
+        data
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to create stats');
     }
@@ -34,8 +39,11 @@ class StatsAPI {
 
   async update(data: StatsCreateUpdateData): Promise<Stats> {
     try {
-      const response = await apiClient.put<Stats>(this.basePath, data);
-      return response.data;
+      const response = await apiClient.put<{ status: boolean; message: string; result: Stats }>(
+        this.basePath,
+        data
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to update stats');
     }
@@ -43,8 +51,11 @@ class StatsAPI {
 
   async patch(data: Partial<StatsCreateUpdateData>): Promise<Stats> {
     try {
-      const response = await apiClient.patch<Stats>(this.basePath, data);
-      return response.data;
+      const response = await apiClient.patch<{ status: boolean; message: string; result: Stats }>(
+        this.basePath,
+        data
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to patch stats');
     }

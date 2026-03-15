@@ -372,7 +372,9 @@ const BlogsPage: React.FC = () => {
         loading={viewDialog.loading}
         loadingComments={viewDialog.loadingComments}
         onClose={viewDialog.close}
-        onEdit={formDialog.openEdit}
+        onEdit={(blog) => {formDialog.openEdit(blog);
+          viewDialog.close();
+        }}
         onFetchComments={viewDialog.fetchComments}
       />
     </div>

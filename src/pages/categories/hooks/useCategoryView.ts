@@ -1,5 +1,5 @@
 // src/pages/categories/hooks/useCategoryView.ts
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { showError } from "../../../utils/notification";
 import categoryAPI, { Category } from "@/api/core/category";
 import blogAPI, { Blog } from "@/api/core/blog";
@@ -10,10 +10,15 @@ export const useCategoryView = () => {
   const [category, setCategory] = useState<Category | null>(null);
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [loadingBlogs, setLoadingBlogs] = useState(false);
+  // Flag to remember if we already tried to fetch blogs for this category
+  const [hasFetchedBlogs, setHasFetchedBlogs] = useState(false);
 
   const open = async (id: number) => {
     setIsOpen(true);
     setLoading(true);
+    // Reset flag when opening a new category
+    setHasFetchedBlogs(false);
+    setBlogs([]);
     try {
       const data = await categoryAPI.get(id);
       setCategory(data);
@@ -25,8 +30,10 @@ export const useCategoryView = () => {
     }
   };
 
-  const fetchBlogs = async () => {
-    if (!category || blogs?.length > 0 || loadingBlogs) return;
+  const fetchBlogs = useCallback(async () => {
+    // Prevent fetching if already fetched, already loading, or no category
+    if (hasFetchedBlogs || loadingBlogs || !category) return;
+
     setLoadingBlogs(true);
     try {
       const response = await blogAPI.list({
@@ -38,13 +45,16 @@ export const useCategoryView = () => {
       showError(err.message || "Failed to load blogs");
     } finally {
       setLoadingBlogs(false);
+      // Mark as fetched even if the result is empty
+      setHasFetchedBlogs(true);
     }
-  };
+  }, [category, hasFetchedBlogs, loadingBlogs]);
 
   const close = () => {
     setIsOpen(false);
     setCategory(null);
     setBlogs([]);
+    setHasFetchedBlogs(false);
   };
 
   return {

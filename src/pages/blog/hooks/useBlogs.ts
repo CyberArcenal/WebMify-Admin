@@ -96,7 +96,7 @@ const useBlogs = (initialFilters?: Partial<BlogFilters>): UseBlogsReturn => {
       const response = await blogAPI.list(params);
       if (mountedRef.current) {
         setBlogs(response.results);
-        setTotalCount(response.count);
+        setTotalCount(response.pagination.count);
         setSelectedBlogs([]);
         setError(null);
       }

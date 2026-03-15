@@ -72,9 +72,9 @@ export interface ProjectListParams {
 }
 
 export interface PaginatedResponse<T> {
- status: boolean;
-   message: string;
-   pagination: Pagination;
+  status: boolean;
+  message: string;
+  pagination: Pagination;
   results: T[];
 }
 
@@ -92,8 +92,10 @@ class ProjectAPI {
 
   async get(id: number): Promise<Project> {
     try {
-      const response = await apiClient.get<Project>(`${this.basePath}${id}/`);
-      return response.data;
+      const response = await apiClient.get<{ status: boolean; message: string; result: Project }>(
+        `${this.basePath}${id}/`
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to fetch project');
     }
@@ -111,10 +113,12 @@ class ProjectAPI {
           }
         }
       });
-      const response = await apiClient.post<Project>(this.basePath, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      return response.data;
+      const response = await apiClient.post<{ status: boolean; message: string; result: Project }>(
+        this.basePath,
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } }
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to create project');
     }
@@ -132,10 +136,12 @@ class ProjectAPI {
           }
         }
       });
-      const response = await apiClient.put<Project>(`${this.basePath}${id}/`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      return response.data;
+      const response = await apiClient.put<{ status: boolean; message: string; result: Project }>(
+        `${this.basePath}${id}/`,
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } }
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to update project');
     }
@@ -153,10 +159,12 @@ class ProjectAPI {
           }
         }
       });
-      const response = await apiClient.patch<Project>(`${this.basePath}${id}/`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      return response.data;
+      const response = await apiClient.patch<{ status: boolean; message: string; result: Project }>(
+        `${this.basePath}${id}/`,
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } }
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to patch project');
     }

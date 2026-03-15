@@ -38,8 +38,8 @@ export interface EducationListParams {
 
 export interface PaginatedResponse<T> {
   status: boolean;
-    message: string;
-    pagination: Pagination;
+  message: string;
+  pagination: Pagination;
   results: T[];
 }
 
@@ -57,8 +57,10 @@ class EducationAPI {
 
   async get(id: number): Promise<Education> {
     try {
-      const response = await apiClient.get<Education>(`${this.basePath}${id}/`);
-      return response.data;
+      const response = await apiClient.get<{ status: boolean; message: string; result: Education }>(
+        `${this.basePath}${id}/`
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to fetch education record');
     }
@@ -76,10 +78,12 @@ class EducationAPI {
           }
         }
       });
-      const response = await apiClient.post<Education>(this.basePath, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      return response.data;
+      const response = await apiClient.post<{ status: boolean; message: string; result: Education }>(
+        this.basePath,
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } }
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to create education record');
     }
@@ -97,10 +101,12 @@ class EducationAPI {
           }
         }
       });
-      const response = await apiClient.put<Education>(`${this.basePath}${id}/`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      return response.data;
+      const response = await apiClient.put<{ status: boolean; message: string; result: Education }>(
+        `${this.basePath}${id}/`,
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } }
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to update education record');
     }
@@ -118,10 +124,12 @@ class EducationAPI {
           }
         }
       });
-      const response = await apiClient.patch<Education>(`${this.basePath}${id}/`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      return response.data;
+      const response = await apiClient.patch<{ status: boolean; message: string; result: Education }>(
+        `${this.basePath}${id}/`,
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } }
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to patch education record');
     }

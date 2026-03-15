@@ -27,8 +27,8 @@ export interface EmailTemplateListParams {
 
 export interface PaginatedResponse<T> {
   status: boolean;
-    message: string;
-    pagination: Pagination;
+  message: string;
+  pagination: Pagination;
   results: T[];
 }
 
@@ -46,8 +46,10 @@ class EmailTemplateAPI {
 
   async get(id: number): Promise<EmailTemplate> {
     try {
-      const response = await apiClient.get<EmailTemplate>(`${this.basePath}${id}/`);
-      return response.data;
+      const response = await apiClient.get<{ status: boolean; message: string; result: EmailTemplate }>(
+        `${this.basePath}${id}/`
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to fetch email template');
     }
@@ -55,8 +57,11 @@ class EmailTemplateAPI {
 
   async create(data: EmailTemplateCreateData): Promise<EmailTemplate> {
     try {
-      const response = await apiClient.post<EmailTemplate>(this.basePath, data);
-      return response.data;
+      const response = await apiClient.post<{ status: boolean; message: string; result: EmailTemplate }>(
+        this.basePath,
+        data
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to create email template');
     }
@@ -64,8 +69,11 @@ class EmailTemplateAPI {
 
   async update(id: number, data: EmailTemplateCreateData): Promise<EmailTemplate> {
     try {
-      const response = await apiClient.put<EmailTemplate>(`${this.basePath}${id}/`, data);
-      return response.data;
+      const response = await apiClient.put<{ status: boolean; message: string; result: EmailTemplate }>(
+        `${this.basePath}${id}/`,
+        data
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to update email template');
     }
@@ -73,8 +81,11 @@ class EmailTemplateAPI {
 
   async patch(id: number, data: EmailTemplateUpdateData): Promise<EmailTemplate> {
     try {
-      const response = await apiClient.patch<EmailTemplate>(`${this.basePath}${id}/`, data);
-      return response.data;
+      const response = await apiClient.patch<{ status: boolean; message: string; result: EmailTemplate }>(
+        `${this.basePath}${id}/`,
+        data
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to patch email template');
     }

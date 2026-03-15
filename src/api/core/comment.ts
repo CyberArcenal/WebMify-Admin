@@ -51,8 +51,8 @@ export interface CommentListParams {
 
 export interface PaginatedResponse<T> {
   status: boolean;
-    message: string;
-    pagination: Pagination;
+  message: string;
+  pagination: Pagination;
   results: T[];
 }
 
@@ -70,8 +70,10 @@ class CommentAPI {
 
   async get(id: number): Promise<Comment> {
     try {
-      const response = await apiClient.get<Comment>(`${this.basePath}${id}/`);
-      return response.data;
+      const response = await apiClient.get<{ status: boolean; message: string; result: Comment }>(
+        `${this.basePath}${id}/`
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to fetch comment');
     }
@@ -79,8 +81,11 @@ class CommentAPI {
 
   async create(data: CommentCreateData): Promise<Comment> {
     try {
-      const response = await apiClient.post<Comment>(this.basePath, data);
-      return response.data;
+      const response = await apiClient.post<{ status: boolean; message: string; result: Comment }>(
+        this.basePath,
+        data
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to create comment');
     }
@@ -88,8 +93,11 @@ class CommentAPI {
 
   async update(id: number, data: CommentUpdateData): Promise<Comment> {
     try {
-      const response = await apiClient.put<Comment>(`${this.basePath}${id}/`, data);
-      return response.data;
+      const response = await apiClient.put<{ status: boolean; message: string; result: Comment }>(
+        `${this.basePath}${id}/`,
+        data
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to update comment');
     }
@@ -97,8 +105,11 @@ class CommentAPI {
 
   async patch(id: number, data: CommentUpdateData): Promise<Comment> {
     try {
-      const response = await apiClient.patch<Comment>(`${this.basePath}${id}/`, data);
-      return response.data;
+      const response = await apiClient.patch<{ status: boolean; message: string; result: Comment }>(
+        `${this.basePath}${id}/`,
+        data
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Failed to patch comment');
     }

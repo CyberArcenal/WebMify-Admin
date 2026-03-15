@@ -1,91 +1,114 @@
-// src/api/project_techstack.ts
+// src/api/project_gallery.ts
 import { apiClient } from "@/lib/fetcher";
 import { Pagination } from "../utils";
 
-export interface ProjectTechStack {
+export interface ProjectGalleryImage {
   id: number;
   project: number;
   project_title?: string;
-  name: string;
-  category: string;
-  icon: string;
+  image: string; // URL
+  image_url: string;
   order: number;
 }
 
-export interface ProjectTechStackCreateData {
+export interface ProjectGalleryImageCreateData {
   project: number;
-  name: string;
-  category?: string;
-  icon?: string;
+  image: File;
   order?: number;
 }
 
-export type ProjectTechStackUpdateData = Partial<Omit<ProjectTechStackCreateData, 'project'>>;
+export type ProjectGalleryImageUpdateData = Partial<Omit<ProjectGalleryImageCreateData, 'project'>>;
 
 export interface PaginatedResponse<T> {
-status: boolean;
+  status: boolean;
   message: string;
   pagination: Pagination;
   results: T[];
 }
 
-class ProjectTechStackAPI {
+class ProjectGalleryAPI {
   private basePath = '/api/v2/portfolio/projects/';
 
-  async list(projectId: number, params?: { page?: number; page_size?: number }): Promise<PaginatedResponse<ProjectTechStack>> {
+  async list(params?: { page?: number; page_size?: number, project_id?: number }): Promise<PaginatedResponse<ProjectGalleryImage>> {
     try {
-      const response = await apiClient.get<PaginatedResponse<ProjectTechStack>>(`${this.basePath}${projectId}/techstack/`, { params });
+      const response = await apiClient.get<PaginatedResponse<ProjectGalleryImage>>(
+        `${this.basePath}gallery/`,
+        { params }
+      );
       return response.data;
     } catch (error: any) {
-      throw new Error(error.response?.data?.detail || 'Failed to fetch tech stack items');
+      throw new Error(error.response?.data?.detail || 'Failed to fetch gallery images');
     }
   }
 
-  async get(projectId: number, id: number): Promise<ProjectTechStack> {
+  async get(id: number): Promise<ProjectGalleryImage> {
     try {
-      const response = await apiClient.get<ProjectTechStack>(`${this.basePath}${projectId}/techstack/${id}/`);
-      return response.data;
+      const response = await apiClient.get<{ status: boolean; message: string; result: ProjectGalleryImage }>(
+        `${this.basePath}gallery/${id}/` 
+      );
+      return response.data.result;
     } catch (error: any) {
-      throw new Error(error.response?.data?.detail || 'Failed to fetch tech stack item');
+      throw new Error(error.response?.data?.detail || 'Failed to fetch gallery image');
     }
   }
 
-  async create(projectId: number, data: Omit<ProjectTechStackCreateData, 'project'>): Promise<ProjectTechStack> {
+  async create(projectId: number, data: Omit<ProjectGalleryImageCreateData, 'project'>): Promise<ProjectGalleryImage> {
     try {
-      const payload = { ...data, project: projectId };
-      const response = await apiClient.post<ProjectTechStack>(`${this.basePath}${projectId}/techstack/`, payload);
-      return response.data;
+      const formData = new FormData();
+      formData.append('project', String(projectId));
+      if (data.image) formData.append('image', data.image);
+      if (data.order !== undefined) formData.append('order', String(data.order));
+      const response = await apiClient.post<{ status: boolean; message: string; result: ProjectGalleryImage }>(
+        `${this.basePath}gallery/`,
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } }
+      );
+      return response.data.result;
     } catch (error: any) {
-      throw new Error(error.response?.data?.detail || 'Failed to create tech stack item');
+      throw new Error(error.response?.data?.detail || 'Failed to create gallery image');
     }
   }
 
-  async update(projectId: number, id: number, data: ProjectTechStackUpdateData): Promise<ProjectTechStack> {
+  async update(id: number, data: ProjectGalleryImageUpdateData): Promise<ProjectGalleryImage> {
     try {
-      const response = await apiClient.put<ProjectTechStack>(`${this.basePath}${projectId}/techstack/${id}/`, data);
-      return response.data;
+      const formData = new FormData();
+      if (data.image) formData.append('image', data.image);
+      if (data.order !== undefined) formData.append('order', String(data.order));
+      const response = await apiClient.put<{ status: boolean; message: string; result: ProjectGalleryImage }>(
+        `${this.basePath}gallery/${id}/`,
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } }
+      );
+      return response.data.result;
     } catch (error: any) {
-      throw new Error(error.response?.data?.detail || 'Failed to update tech stack item');
+      throw new Error(error.response?.data?.detail || 'Failed to update gallery image');
     }
   }
 
-  async patch(projectId: number, id: number, data: ProjectTechStackUpdateData): Promise<ProjectTechStack> {
+  async patch(id: number, data: ProjectGalleryImageUpdateData): Promise<ProjectGalleryImage> {
     try {
-      const response = await apiClient.patch<ProjectTechStack>(`${this.basePath}${projectId}/techstack/${id}/`, data);
-      return response.data;
+      const formData = new FormData();
+      if (data.image) formData.append('image', data.image);
+      if (data.order !== undefined) formData.append('order', String(data.order));
+      const response = await apiClient.patch<{ status: boolean; message: string; result: ProjectGalleryImage }>(
+        `${this.basePath}gallery/${id}/`,
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } }
+      );
+      return response.data.result;
     } catch (error: any) {
-      throw new Error(error.response?.data?.detail || 'Failed to patch tech stack item');
+      throw new Error(error.response?.data?.detail || 'Failed to patch gallery image');
     }
   }
 
   async delete(projectId: number, id: number): Promise<void> {
     try {
-      await apiClient.delete(`${this.basePath}${projectId}/techstack/${id}/`);
+      await apiClient.delete(`${this.basePath}gallery/${id}/`);
     } catch (error: any) {
-      throw new Error(error.response?.data?.detail || 'Failed to delete tech stack item');
+      throw new Error(error.response?.data?.detail || 'Failed to delete gallery image');
     }
   }
 }
 
-const projectTechStackAPI = new ProjectTechStackAPI();
-export default projectTechStackAPI;
+const projectGalleryAPI = new ProjectGalleryAPI();
+export default projectGalleryAPI;

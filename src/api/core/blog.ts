@@ -27,7 +27,7 @@ export interface Blog {
   publishDate: string | null;
   summary: string;
   imageURL: string | null;
-  categories: Category[]; // Minimal category (id, name, slug)
+  categories: Category[];
 }
 
 export interface BlogCreateData {
@@ -77,8 +77,10 @@ class BlogAPI {
 
   async get(id: number): Promise<Blog> {
     try {
-      const response = await apiClient.get<Blog>(`${this.basePath}${id}/`);
-      return response.data;
+      const response = await apiClient.get<{ status: boolean; message: string; result: Blog }>(
+        `${this.basePath}${id}/`
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || "Failed to fetch blog");
     }
@@ -86,10 +88,10 @@ class BlogAPI {
 
   async getBySlug(slug: string): Promise<Blog> {
     try {
-      const response = await apiClient.get<Blog>(
+      const response = await apiClient.get<{ status: boolean; message: string; result: Blog }>(
         `${this.basePath}by-slug/${slug}/`,
       );
-      return response.data;
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || "Failed to fetch blog");
     }
@@ -109,10 +111,12 @@ class BlogAPI {
           }
         }
       });
-      const response = await apiClient.post<Blog>(this.basePath, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      return response.data;
+      const response = await apiClient.post<{ status: boolean; message: string; result: Blog }>(
+        this.basePath,
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || "Failed to create blog");
     }
@@ -132,14 +136,12 @@ class BlogAPI {
           }
         }
       });
-      const response = await apiClient.put<Blog>(
+      const response = await apiClient.put<{ status: boolean; message: string; result: Blog }>(
         `${this.basePath}${id}/`,
         formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        },
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
-      return response.data;
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || "Failed to update blog");
     }
@@ -159,14 +161,12 @@ class BlogAPI {
           }
         }
       });
-      const response = await apiClient.patch<Blog>(
+      const response = await apiClient.patch<{ status: boolean; message: string; result: Blog }>(
         `${this.basePath}${id}/`,
         formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        },
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
-      return response.data;
+      return response.data.result;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || "Failed to patch blog");
     }
@@ -180,24 +180,14 @@ class BlogAPI {
     }
   }
 
-  async getPopular(): Promise<
-    {
-      id: number;
-      title: string;
-      publishDate: string;
-      imageURL: string | null;
-      slug: string;
-      views: number;
-    }[]
-  > {
+  async getPopular(): Promise<{ id: number; title: string; publishDate: string; imageURL: string | null; slug: string; views: number; }[]> {
     try {
-      const response = await apiClient.get("/api/v2/portfolio/blog/popular/");
-      // Assuming response.data.data is the array
-      return response.data.data;
-    } catch (error: any) {
-      throw new Error(
-        error.response?.data?.detail || "Failed to fetch popular blogs",
+      const response = await apiClient.get<{ status: boolean; message: string; result: { id: number; title: string; publishDate: string; imageURL: string | null; slug: string; views: number; }[] }>(
+        "/api/v2/portfolio/blog/popular/"
       );
+      return response.data.result;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.detail || "Failed to fetch popular blogs");
     }
   }
 }

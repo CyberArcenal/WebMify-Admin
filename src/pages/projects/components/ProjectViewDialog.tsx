@@ -15,7 +15,7 @@ interface ProjectViewDialogProps {
   project: Project | null;
   loading: boolean;
   onClose: () => void;
-  onEdit?: (id: number) => void;
+  onEdit?: (project: Project) => void;
 }
 
 const ProjectViewDialog: React.FC<ProjectViewDialogProps> = ({
@@ -59,7 +59,7 @@ const ProjectViewDialog: React.FC<ProjectViewDialogProps> = ({
                 </span>
               )}
               {onEdit && (
-                <Button variant="secondary" size="sm" onClick={() => onEdit(project.id)}>
+                <Button variant="secondary" size="sm" onClick={() => onEdit(project)}>
                   <Edit className="w-4 h-4 mr-1" /> Edit
                 </Button>
               )}
