@@ -1,17 +1,30 @@
+import notificationAPI from "@/api/core/notification";
 import {
   BarChart3,
   Bell,
   Menu,
-  Package,
   Search,
-  ShoppingCart,
-  Truck,
-  TrendingUp,
-  BarChart,
-  Cog,
+  FileText,
+  Folder,
+  MessageSquare,
+  Briefcase,
+  User,
+  Code,
+  GraduationCap,
+  Star,
+  Mail,
+  Users,
+  PieChart,
+  MailOpen,
+  Settings,
+  Award,
+  Image,
+  Layers,
+  Cpu,
 } from "lucide-react";
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { NotificationDrawer } from "./NotificationDrawer";
 
 interface RouteInfo {
   path: string;
@@ -30,16 +43,64 @@ const TopBar: React.FC<TopBarProps> = ({ toggleSidebar }) => {
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
 
+  // Fetch unread count on mount and when drawer closes
+  useEffect(() => {
+    fetchUnreadCount();
+  }, []);
 
-  // Callback to update badge from drawer
+  const fetchUnreadCount = async () => {
+    try {
+      const response = await notificationAPI.list({ page: 1, page_size: 100 });
+      const unread = response.results.filter((n) => !n.is_read).length;
+      setUnreadCount(unread);
+    } catch (error) {
+      console.error("Failed to fetch unread count", error);
+    }
+  };
+
+  const handleDrawerClose = () => {
+    setIsNotificationOpen(false);
+    fetchUnreadCount();
+  };
+
   const handleUnreadCountChange = (count: number) => {
     setUnreadCount(count);
   };
 
-  // All searchable routes (same as before) – keep your full list here
+  // All searchable routes – matches the ones in App.tsx
   const allRoutes: RouteInfo[] = useMemo(
     () => [
-      // ... your route definitions
+      // Dashboard
+      { path: "/dashboard", name: "Dashboard", category: "Main" },
+
+      // Blog
+      { path: "/blog", name: "Blog Posts", category: "Blog" },
+      { path: "/blog/categories", name: "Categories", category: "Blog" },
+      { path: "/blog/comments", name: "Comments", category: "Blog" },
+
+      // Projects
+      { path: "/projects", name: "Projects", category: "Projects" },
+      { path: "/projects/features", name: "Project Features", category: "Projects" },
+      { path: "/projects/gallery", name: "Project Gallery", category: "Projects" },
+      { path: "/projects/tech-stack", name: "Tech Stack", category: "Projects" },
+
+      // Testimonials
+      { path: "/testimonials", name: "Testimonials", category: "Testimonials" },
+
+      // Profile & Skills
+      { path: "/profile", name: "Profile", category: "Personal" },
+      { path: "/skills", name: "Skills", category: "Personal" },
+      { path: "/experience", name: "Experience", category: "Personal" },
+      { path: "/education", name: "Education", category: "Personal" },
+
+      // Engagement
+      { path: "/subscribers", name: "Subscribers", category: "Engagement" },
+      { path: "/contact-messages", name: "Contact Messages", category: "Engagement" },
+
+      // System
+      { path: "/stats", name: "Statistics", category: "System" },
+      { path: "/email-templates", name: "Email Templates", category: "System" },
+      { path: "/users", name: "Users", category: "System" },
     ],
     []
   );
@@ -65,12 +126,7 @@ const TopBar: React.FC<TopBarProps> = ({ toggleSidebar }) => {
   };
 
   const handleRouteSelect = (path: string) => {
-    const navigablePath = path
-      .replace("/:id", "")
-      .replace("/:productId", "")
-      .replace("/:variantId", "")
-      .replace("/:imageId", "");
-    navigate(navigablePath);
+    navigate(path);
     setSearchQuery("");
     setShowSearchResults(false);
   };
@@ -78,16 +134,17 @@ const TopBar: React.FC<TopBarProps> = ({ toggleSidebar }) => {
   const getRouteIcon = (category: string) => {
     switch (category) {
       case "Main": return BarChart3;
-      case "Inventory": return Package;
-      case "Sales": return ShoppingCart;
-      case "Procurement": return Truck;
-      case "Analytics": return BarChart;
-      case "System": return Cog;
-      default: return TrendingUp;
+      case "Blog": return FileText;
+      case "Projects": return Folder;
+      case "Testimonials": return Star;
+      case "Personal": return User;
+      case "Engagement": return MessageSquare;
+      case "System": return Settings;
+      default: return FileText;
     }
   };
 
-  const formatPathForDisplay = (path: string) => path.replace(/:([^/]+)/g, "[...]");
+  const formatPathForDisplay = (path: string) => path;
 
   return (
     <>
@@ -112,7 +169,7 @@ const TopBar: React.FC<TopBarProps> = ({ toggleSidebar }) => {
                 </div>
                 <input
                   type="text"
-                  placeholder="Search pages, products, orders, reports..."
+                  placeholder="Search pages..."
                   value={searchQuery}
                   onChange={(e) => {
                     setSearchQuery(e.target.value);
@@ -170,10 +227,10 @@ const TopBar: React.FC<TopBarProps> = ({ toggleSidebar }) => {
         </div>
 
         {/* Right side: notifications */}
-        <div className="flex items-center gap-md hidden">
+        <div className="flex items-center gap-md">
           <div className="relative">
             <button
-              onClick={() => setIsNotificationOpen(!isNotificationOpen)}
+              onClick={() => setIsNotificationOpen(true)}
               aria-label="Notifications"
               className="relative p-2 rounded-lg hover:bg-[var(--card-secondary-bg)] text-[var(--sidebar-text)] transition-colors duration-200"
             >
@@ -187,6 +244,13 @@ const TopBar: React.FC<TopBarProps> = ({ toggleSidebar }) => {
           </div>
         </div>
       </header>
+
+      {/* Notification Drawer */}
+      <NotificationDrawer
+        isOpen={isNotificationOpen}
+        onClose={handleDrawerClose}
+        onUnreadCountChange={handleUnreadCountChange}
+      />
     </>
   );
 };

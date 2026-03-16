@@ -132,16 +132,28 @@ const SkillFormDialog: React.FC<SkillFormDialogProps> = ({
           >
             Category *
           </label>
-          <input
+          <select
             {...register("category", { required: "Category is required" })}
             className="compact-input w-full border rounded-md"
-            placeholder="e.g., Frontend, Backend, Tools"
             style={{
               backgroundColor: "var(--card-bg)",
               borderColor: "var(--border-color)",
               color: "var(--sidebar-text)",
             }}
-          />
+          >
+            <option value="">-- Select Category --</option>
+            <option value="language">Programming Languages</option>
+            <option value="frontend">Frontend Development</option>
+            <option value="backend">Backend & Databases</option>
+            <option value="devops">DevOps & Cloud</option>
+            <option value="framework">Frameworks & Libraries</option>
+            <option value="design">Design & Tools</option>
+            <option value="business">Business & Professional</option>
+            <option value="creative">Creative & Media</option>
+            <option value="academic">Academic & Research</option>
+            <option value="personal">Personal Development</option>
+            <option value="community">Community & Social Impact</option>
+          </select>
           {errors.category && (
             <p className="text-xs text-red-500 mt-1">
               {errors.category.message}

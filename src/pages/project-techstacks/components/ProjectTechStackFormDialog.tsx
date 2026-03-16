@@ -149,10 +149,18 @@ const ProjectTechStackFormDialog: React.FC<ProjectTechStackFormDialogProps> = ({
             }}
           >
             <option value="other">Other</option>
-            <option value="frontend">Front End</option>
-            <option value="backend">Back End</option>
+            <option value="frontend">Frontend</option>
+            <option value="backend">Backend</option>
             <option value="database">Database</option>
             <option value="devops">DevOps</option>
+            <option value="mobile">Mobile</option>
+            <option value="uiux">UI/UX</option>
+            <option value="testing">Testing</option>
+            <option value="security">Security</option>
+            <option value="datascience">Data Science & AI</option>
+            <option value="api">API & Integration</option>
+            <option value="game">Game Development</option>
+            <option value="iot">Hardware & IoT</option>
           </select>
         </div>
 
