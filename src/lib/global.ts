@@ -7,8 +7,8 @@
 export function global_base_url(): string {
   const urlLocal = "http://127.0.0.1:8000";
   // const urlRemote = "https://oriented-frank-airedale.ngrok-free.app";
-  const serverUrl = "";
+  const serverUrl = "https://fortfollio-system.vercel.app/";
 
   // For now we always return the local URL.
-  return urlLocal;
+  return serverUrl;
 }
