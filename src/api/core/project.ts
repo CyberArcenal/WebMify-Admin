@@ -52,6 +52,7 @@ export interface Project {
 
 export interface ProjectCreateData {
   title: string;
+  slug: string;
   description: string;
   project_type?: string;
   image?: File | null;

@@ -4,7 +4,10 @@ import { useForm } from "react-hook-form";
 import Modal from "../../../components/UI/Modal";
 import Button from "../../../components/UI/Button";
 import { dialogs } from "../../../utils/dialogs";
-import experienceAPI, { Experience, ExperienceCreateData } from "@/api/core/experience";
+import experienceAPI, {
+  Experience,
+  ExperienceCreateData,
+} from "@/api/core/experience";
 
 interface ExperienceFormDialogProps {
   isOpen: boolean;
@@ -86,7 +89,7 @@ const ExperienceFormDialog: React.FC<ExperienceFormDialogProps> = ({
         position: data.position,
         description: data.description,
         start_date: data.start_date,
-        end_date: data.current ? null : (data.end_date || null),
+        end_date: data.current ? null : data.end_date || null,
         current: data.current,
         order: data.order,
       };
@@ -125,7 +128,10 @@ const ExperienceFormDialog: React.FC<ExperienceFormDialogProps> = ({
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Company */}
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+          <label
+            className="block text-sm font-medium mb-1"
+            style={{ color: "var(--sidebar-text)" }}
+          >
             Company *
           </label>
           <input
@@ -137,12 +143,19 @@ const ExperienceFormDialog: React.FC<ExperienceFormDialogProps> = ({
               color: "var(--sidebar-text)",
             }}
           />
-          {errors.company && <p className="text-xs text-red-500 mt-1">{errors.company.message}</p>}
+          {errors.company && (
+            <p className="text-xs text-red-500 mt-1">
+              {errors.company.message}
+            </p>
+          )}
         </div>
 
         {/* Position */}
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+          <label
+            className="block text-sm font-medium mb-1"
+            style={{ color: "var(--sidebar-text)" }}
+          >
             Position *
           </label>
           <input
@@ -154,16 +167,25 @@ const ExperienceFormDialog: React.FC<ExperienceFormDialogProps> = ({
               color: "var(--sidebar-text)",
             }}
           />
-          {errors.position && <p className="text-xs text-red-500 mt-1">{errors.position.message}</p>}
+          {errors.position && (
+            <p className="text-xs text-red-500 mt-1">
+              {errors.position.message}
+            </p>
+          )}
         </div>
 
         {/* Description */}
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+          <label
+            className="block text-sm font-medium mb-1"
+            style={{ color: "var(--sidebar-text)" }}
+          >
             Description *
           </label>
           <textarea
-            {...register("description", { required: "Description is required" })}
+            {...register("description", {
+              required: "Description is required",
+            })}
             rows={4}
             className="compact-input w-full border rounded-md"
             style={{
@@ -172,18 +194,27 @@ const ExperienceFormDialog: React.FC<ExperienceFormDialogProps> = ({
               color: "var(--sidebar-text)",
             }}
           />
-          {errors.description && <p className="text-xs text-red-500 mt-1">{errors.description.message}</p>}
+          {errors.description && (
+            <p className="text-xs text-red-500 mt-1">
+              {errors.description.message}
+            </p>
+          )}
         </div>
 
         {/* Dates */}
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+            <label
+              className="block text-sm font-medium mb-1"
+              style={{ color: "var(--sidebar-text)" }}
+            >
               Start Date *
             </label>
             <input
               type="date"
-              {...register("start_date", { required: "Start date is required" })}
+              {...register("start_date", {
+                required: "Start date is required",
+              })}
               className="compact-input w-full border rounded-md"
               style={{
                 backgroundColor: "var(--card-bg)",
@@ -191,11 +222,18 @@ const ExperienceFormDialog: React.FC<ExperienceFormDialogProps> = ({
                 color: "var(--sidebar-text)",
               }}
             />
-            {errors.start_date && <p className="text-xs text-red-500 mt-1">{errors.start_date.message}</p>}
+            {errors.start_date && (
+              <p className="text-xs text-red-500 mt-1">
+                {errors.start_date.message}
+              </p>
+            )}
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+            <label
+              className="block text-sm font-medium mb-1"
+              style={{ color: "var(--sidebar-text)" }}
+            >
               End Date
             </label>
             <input
@@ -214,15 +252,25 @@ const ExperienceFormDialog: React.FC<ExperienceFormDialogProps> = ({
 
         {/* Current Checkbox */}
         <div>
-          <label className="flex items-center gap-2 text-sm" style={{ color: "var(--sidebar-text)" }}>
-            <input type="checkbox" {...register("current")} className="h-4 w-4" />
+          <label
+            className="flex items-center gap-2 text-sm"
+            style={{ color: "var(--sidebar-text)" }}
+          >
+            <input
+              type="checkbox"
+              {...register("current")}
+              className="h-4 w-4"
+            />
             I currently work here
           </label>
         </div>
 
         {/* Order */}
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+          <label
+            className="block text-sm font-medium mb-1"
+            style={{ color: "var(--sidebar-text)" }}
+          >
             Display Order
           </label>
           <input
@@ -239,7 +287,10 @@ const ExperienceFormDialog: React.FC<ExperienceFormDialogProps> = ({
 
         {/* Company Logo */}
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+          <label
+            className="block text-sm font-medium mb-1"
+            style={{ color: "var(--sidebar-text)" }}
+          >
             Company Logo
           </label>
           <input
@@ -262,7 +313,23 @@ const ExperienceFormDialog: React.FC<ExperienceFormDialogProps> = ({
 
         {/* Footer */}
         <div className="flex justify-end gap-2 pt-4 border-t border-[var(--border-color)]">
-          <Button type="button" variant="secondary" onClick={onClose}>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={async () => {
+              if (
+                !(await dialogs.confirm({
+                  title: "Cancel Form",
+                  message:
+                    "Are you sure do you want to cancel this form your data may be loss?.",
+                  confirmText: "Cancel Anyway",
+                }))
+              )
+                return;
+
+              onClose();
+            }}
+          >
             Cancel
           </Button>
           <Button type="submit" variant="success" disabled={isSubmitting}>

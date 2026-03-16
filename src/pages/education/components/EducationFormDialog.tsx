@@ -4,7 +4,10 @@ import { useForm } from "react-hook-form";
 import Modal from "../../../components/UI/Modal";
 import Button from "../../../components/UI/Button";
 import { dialogs } from "../../../utils/dialogs";
-import educationAPI, { Education, EducationCreateData } from "@/api/core/education";
+import educationAPI, {
+  Education,
+  EducationCreateData,
+} from "@/api/core/education";
 
 interface EducationFormDialogProps {
   isOpen: boolean;
@@ -90,7 +93,7 @@ const EducationFormDialog: React.FC<EducationFormDialogProps> = ({
         field_of_study: data.field_of_study,
         description: data.description || undefined,
         start_date: data.start_date,
-        end_date: data.current ? null : (data.end_date || null),
+        end_date: data.current ? null : data.end_date || null,
         current: data.current,
         order: data.order,
       };
@@ -101,7 +104,12 @@ const EducationFormDialog: React.FC<EducationFormDialogProps> = ({
       }
 
       if (mode === "add") {
-        if (!data.institution || !data.degree || !data.field_of_study || !data.start_date) {
+        if (
+          !data.institution ||
+          !data.degree ||
+          !data.field_of_study ||
+          !data.start_date
+        ) {
           throw new Error("Required fields are missing");
         }
         await educationAPI.create(payload);
@@ -129,11 +137,16 @@ const EducationFormDialog: React.FC<EducationFormDialogProps> = ({
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Institution */}
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+          <label
+            className="block text-sm font-medium mb-1"
+            style={{ color: "var(--sidebar-text)" }}
+          >
             Institution *
           </label>
           <input
-            {...register("institution", { required: "Institution is required" })}
+            {...register("institution", {
+              required: "Institution is required",
+            })}
             className="compact-input w-full border rounded-md"
             style={{
               backgroundColor: "var(--card-bg)",
@@ -141,12 +154,19 @@ const EducationFormDialog: React.FC<EducationFormDialogProps> = ({
               color: "var(--sidebar-text)",
             }}
           />
-          {errors.institution && <p className="text-xs text-red-500 mt-1">{errors.institution.message}</p>}
+          {errors.institution && (
+            <p className="text-xs text-red-500 mt-1">
+              {errors.institution.message}
+            </p>
+          )}
         </div>
 
         {/* Degree */}
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+          <label
+            className="block text-sm font-medium mb-1"
+            style={{ color: "var(--sidebar-text)" }}
+          >
             Degree *
           </label>
           <input
@@ -158,16 +178,23 @@ const EducationFormDialog: React.FC<EducationFormDialogProps> = ({
               color: "var(--sidebar-text)",
             }}
           />
-          {errors.degree && <p className="text-xs text-red-500 mt-1">{errors.degree.message}</p>}
+          {errors.degree && (
+            <p className="text-xs text-red-500 mt-1">{errors.degree.message}</p>
+          )}
         </div>
 
         {/* Field of Study */}
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+          <label
+            className="block text-sm font-medium mb-1"
+            style={{ color: "var(--sidebar-text)" }}
+          >
             Field of Study *
           </label>
           <input
-            {...register("field_of_study", { required: "Field of study is required" })}
+            {...register("field_of_study", {
+              required: "Field of study is required",
+            })}
             className="compact-input w-full border rounded-md"
             style={{
               backgroundColor: "var(--card-bg)",
@@ -175,12 +202,19 @@ const EducationFormDialog: React.FC<EducationFormDialogProps> = ({
               color: "var(--sidebar-text)",
             }}
           />
-          {errors.field_of_study && <p className="text-xs text-red-500 mt-1">{errors.field_of_study.message}</p>}
+          {errors.field_of_study && (
+            <p className="text-xs text-red-500 mt-1">
+              {errors.field_of_study.message}
+            </p>
+          )}
         </div>
 
         {/* Description */}
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+          <label
+            className="block text-sm font-medium mb-1"
+            style={{ color: "var(--sidebar-text)" }}
+          >
             Description
           </label>
           <textarea
@@ -198,12 +232,17 @@ const EducationFormDialog: React.FC<EducationFormDialogProps> = ({
         {/* Dates */}
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+            <label
+              className="block text-sm font-medium mb-1"
+              style={{ color: "var(--sidebar-text)" }}
+            >
               Start Date *
             </label>
             <input
               type="date"
-              {...register("start_date", { required: "Start date is required" })}
+              {...register("start_date", {
+                required: "Start date is required",
+              })}
               className="compact-input w-full border rounded-md"
               style={{
                 backgroundColor: "var(--card-bg)",
@@ -211,11 +250,18 @@ const EducationFormDialog: React.FC<EducationFormDialogProps> = ({
                 color: "var(--sidebar-text)",
               }}
             />
-            {errors.start_date && <p className="text-xs text-red-500 mt-1">{errors.start_date.message}</p>}
+            {errors.start_date && (
+              <p className="text-xs text-red-500 mt-1">
+                {errors.start_date.message}
+              </p>
+            )}
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+            <label
+              className="block text-sm font-medium mb-1"
+              style={{ color: "var(--sidebar-text)" }}
+            >
               End Date
             </label>
             <input
@@ -234,15 +280,25 @@ const EducationFormDialog: React.FC<EducationFormDialogProps> = ({
 
         {/* Current Checkbox */}
         <div>
-          <label className="flex items-center gap-2 text-sm" style={{ color: "var(--sidebar-text)" }}>
-            <input type="checkbox" {...register("current")} className="h-4 w-4" />
+          <label
+            className="flex items-center gap-2 text-sm"
+            style={{ color: "var(--sidebar-text)" }}
+          >
+            <input
+              type="checkbox"
+              {...register("current")}
+              className="h-4 w-4"
+            />
             Currently studying here
           </label>
         </div>
 
         {/* Order */}
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+          <label
+            className="block text-sm font-medium mb-1"
+            style={{ color: "var(--sidebar-text)" }}
+          >
             Display Order
           </label>
           <input
@@ -259,7 +315,10 @@ const EducationFormDialog: React.FC<EducationFormDialogProps> = ({
 
         {/* Institution Logo */}
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+          <label
+            className="block text-sm font-medium mb-1"
+            style={{ color: "var(--sidebar-text)" }}
+          >
             Institution Logo
           </label>
           <input
@@ -282,7 +341,23 @@ const EducationFormDialog: React.FC<EducationFormDialogProps> = ({
 
         {/* Footer */}
         <div className="flex justify-end gap-2 pt-4 border-t border-[var(--border-color)]">
-          <Button type="button" variant="secondary" onClick={onClose}>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={async () => {
+              if (
+                !(await dialogs.confirm({
+                  title: "Cancel Form",
+                  message:
+                    "Are you sure do you want to cancel this form your data may be loss?.",
+                  confirmText: "Cancel Anyway",
+                }))
+              )
+                return;
+
+              onClose();
+            }}
+          >
             Cancel
           </Button>
           <Button type="submit" variant="success" disabled={isSubmitting}>

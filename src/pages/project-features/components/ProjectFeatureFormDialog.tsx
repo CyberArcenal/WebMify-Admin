@@ -4,7 +4,10 @@ import { useForm } from "react-hook-form";
 import Modal from "../../../components/UI/Modal";
 import Button from "../../../components/UI/Button";
 import { dialogs } from "../../../utils/dialogs";
-import projectFeatureAPI, { ProjectFeature, ProjectFeatureCreateData } from "@/api/core/project_feature";
+import projectFeatureAPI, {
+  ProjectFeature,
+  ProjectFeatureCreateData,
+} from "@/api/core/project_feature";
 
 interface ProjectFeatureFormDialogProps {
   isOpen: boolean;
@@ -94,11 +97,16 @@ const ProjectFeatureFormDialog: React.FC<ProjectFeatureFormDialogProps> = ({
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Description */}
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+          <label
+            className="block text-sm font-medium mb-1"
+            style={{ color: "var(--sidebar-text)" }}
+          >
             Description *
           </label>
           <textarea
-            {...register("description", { required: "Description is required" })}
+            {...register("description", {
+              required: "Description is required",
+            })}
             rows={4}
             className="compact-input w-full border rounded-md"
             style={{
@@ -107,12 +115,19 @@ const ProjectFeatureFormDialog: React.FC<ProjectFeatureFormDialogProps> = ({
               color: "var(--sidebar-text)",
             }}
           />
-          {errors.description && <p className="text-xs text-red-500 mt-1">{errors.description.message}</p>}
+          {errors.description && (
+            <p className="text-xs text-red-500 mt-1">
+              {errors.description.message}
+            </p>
+          )}
         </div>
 
         {/* Order */}
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+          <label
+            className="block text-sm font-medium mb-1"
+            style={{ color: "var(--sidebar-text)" }}
+          >
             Display Order
           </label>
           <input
@@ -129,7 +144,23 @@ const ProjectFeatureFormDialog: React.FC<ProjectFeatureFormDialogProps> = ({
 
         {/* Footer */}
         <div className="flex justify-end gap-2 pt-4 border-t border-[var(--border-color)]">
-          <Button type="button" variant="secondary" onClick={onClose}>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={async () => {
+              if (
+                !(await dialogs.confirm({
+                  title: "Cancel Form",
+                  message:
+                    "Are you sure do you want to cancel this form your data may be loss?.",
+                  confirmText: "Cancel Anyway",
+                }))
+              )
+                return;
+
+              onClose();
+            }}
+          >
             Cancel
           </Button>
           <Button type="submit" variant="success" disabled={isSubmitting}>

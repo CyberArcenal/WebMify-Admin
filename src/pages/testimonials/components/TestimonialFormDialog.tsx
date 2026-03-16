@@ -4,7 +4,10 @@ import { useForm } from "react-hook-form";
 import Modal from "../../../components/UI/Modal";
 import Button from "../../../components/UI/Button";
 import { dialogs } from "../../../utils/dialogs";
-import testimonialAPI, { Testimonial, TestimonialCreateData } from "@/api/core/testimonial";
+import testimonialAPI, {
+  Testimonial,
+  TestimonialCreateData,
+} from "@/api/core/testimonial";
 
 interface TestimonialFormDialogProps {
   isOpen: boolean;
@@ -106,7 +109,10 @@ const TestimonialFormDialog: React.FC<TestimonialFormDialogProps> = ({
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Author */}
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+          <label
+            className="block text-sm font-medium mb-1"
+            style={{ color: "var(--sidebar-text)" }}
+          >
             Author Name *
           </label>
           <input
@@ -118,16 +124,23 @@ const TestimonialFormDialog: React.FC<TestimonialFormDialogProps> = ({
               color: "var(--sidebar-text)",
             }}
           />
-          {errors.author && <p className="text-xs text-red-500 mt-1">{errors.author.message}</p>}
+          {errors.author && (
+            <p className="text-xs text-red-500 mt-1">{errors.author.message}</p>
+          )}
         </div>
 
         {/* Author Title */}
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+          <label
+            className="block text-sm font-medium mb-1"
+            style={{ color: "var(--sidebar-text)" }}
+          >
             Author Title/Position *
           </label>
           <input
-            {...register("author_title", { required: "Author title is required" })}
+            {...register("author_title", {
+              required: "Author title is required",
+            })}
             className="compact-input w-full border rounded-md"
             placeholder="e.g., CEO, Client, Project Manager"
             style={{
@@ -136,12 +149,19 @@ const TestimonialFormDialog: React.FC<TestimonialFormDialogProps> = ({
               color: "var(--sidebar-text)",
             }}
           />
-          {errors.author_title && <p className="text-xs text-red-500 mt-1">{errors.author_title.message}</p>}
+          {errors.author_title && (
+            <p className="text-xs text-red-500 mt-1">
+              {errors.author_title.message}
+            </p>
+          )}
         </div>
 
         {/* Content */}
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+          <label
+            className="block text-sm font-medium mb-1"
+            style={{ color: "var(--sidebar-text)" }}
+          >
             Testimonial Content *
           </label>
           <textarea
@@ -154,12 +174,19 @@ const TestimonialFormDialog: React.FC<TestimonialFormDialogProps> = ({
               color: "var(--sidebar-text)",
             }}
           />
-          {errors.content && <p className="text-xs text-red-500 mt-1">{errors.content.message}</p>}
+          {errors.content && (
+            <p className="text-xs text-red-500 mt-1">
+              {errors.content.message}
+            </p>
+          )}
         </div>
 
         {/* Rating */}
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+          <label
+            className="block text-sm font-medium mb-1"
+            style={{ color: "var(--sidebar-text)" }}
+          >
             Rating (1-5)
           </label>
           <select
@@ -181,15 +208,25 @@ const TestimonialFormDialog: React.FC<TestimonialFormDialogProps> = ({
 
         {/* Featured Checkbox */}
         <div>
-          <label className="flex items-center gap-2 text-sm" style={{ color: "var(--sidebar-text)" }}>
-            <input type="checkbox" {...register("featured")} className="h-4 w-4" />
+          <label
+            className="flex items-center gap-2 text-sm"
+            style={{ color: "var(--sidebar-text)" }}
+          >
+            <input
+              type="checkbox"
+              {...register("featured")}
+              className="h-4 w-4"
+            />
             Featured
           </label>
         </div>
 
         {/* Author Image */}
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+          <label
+            className="block text-sm font-medium mb-1"
+            style={{ color: "var(--sidebar-text)" }}
+          >
             Author Image
           </label>
           <input
@@ -212,7 +249,23 @@ const TestimonialFormDialog: React.FC<TestimonialFormDialogProps> = ({
 
         {/* Footer */}
         <div className="flex justify-end gap-2 pt-4 border-t border-[var(--border-color)]">
-          <Button type="button" variant="secondary" onClick={onClose}>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={async () => {
+              if (
+                !(await dialogs.confirm({
+                  title: "Cancel Form",
+                  message:
+                    "Are you sure do you want to cancel this form your data may be loss?.",
+                  confirmText: "Cancel Anyway",
+                }))
+              )
+                return;
+
+              onClose();
+            }}
+          >
             Cancel
           </Button>
           <Button type="submit" variant="success" disabled={isSubmitting}>

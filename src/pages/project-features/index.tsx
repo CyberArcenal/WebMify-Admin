@@ -7,7 +7,9 @@ import Pagination from "../../components/Shared/Pagination1";
 import { dialogs } from "../../utils/dialogs";
 import { showSuccess, showError } from "../../utils/notification";
 
-import useProjectFeatures, { type ProjectFeatureWithDetails } from "./hooks/useProjectFeatures";
+import useProjectFeatures, {
+  type ProjectFeatureWithDetails,
+} from "./hooks/useProjectFeatures";
 import ProjectFeatureTable from "./components/ProjectFeatureTable";
 import projectFeatureAPI from "@/api/core/project_feature";
 import projectAPI, { Project } from "@/api/core/project";
@@ -16,10 +18,13 @@ import { useProjectFeatureView } from "./hooks/useProjectFeatureView";
 import FilterBar from "./components/FilterBar";
 import ProjectFeatureFormDialog from "./components/ProjectFeatureFormDialog";
 import ProjectFeatureViewDialog from "./components/ProjectFeatureViewDialog";
+import ProjectSelect from "@/components/Selects/Project";
 
 const ProjectFeaturesPage: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
-  const [selectedProjectId, setSelectedProjectId] = useState<number | null>(null);
+  const [selectedProjectId, setSelectedProjectId] = useState<number | null>(
+    null,
+  );
   const [loadingProjects, setLoadingProjects] = useState(true);
 
   const {
@@ -170,26 +175,19 @@ const ProjectFeaturesPage: React.FC = () => {
 
       {/* Project Selector */}
       <div className="mb-4">
-        <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+        <label
+          className="block text-sm font-medium mb-1"
+          style={{ color: "var(--sidebar-text)" }}
+        >
           Select Project
         </label>
-        <select
-          value={selectedProjectId || ""}
-          onChange={(e) => setSelectedProjectId(e.target.value ? Number(e.target.value) : null)}
-          className="compact-input w-full max-w-md border rounded-md"
-          style={{
-            backgroundColor: "var(--card-bg)",
-            borderColor: "var(--border-color)",
-            color: "var(--sidebar-text)",
+        <ProjectSelect
+          disabled={loading}
+          onChange={(projectId, project) => {
+            setSelectedProjectId(projectId);
           }}
-        >
-          <option value="">-- Choose a project --</option>
-          {projects.map((project) => (
-            <option key={project.id} value={project.id}>
-              {project.title}
-            </option>
-          ))}
-        </select>
+          value={selectedProjectId || null}
+        />
       </div>
 
       {/* Summary Banner */}

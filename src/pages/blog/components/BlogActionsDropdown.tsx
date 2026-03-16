@@ -7,6 +7,8 @@ import {
   MoreVertical,
   Star,
   StarOff,
+  CheckCircle,
+  XCircle,
 } from "lucide-react";
 import { dialogs } from "../../../utils/dialogs";
 import type { BlogWithDetails } from "../hooks/useBlogs";
@@ -17,6 +19,7 @@ interface BlogActionsDropdownProps {
   onEdit: (blog: BlogWithDetails) => void;
   onDelete: (blog: BlogWithDetails) => void;
   onToggleFeatured?: (blog: BlogWithDetails) => void;
+  onToggleStatus?: (blog: BlogWithDetails) => void; // NEW: publish/unpublish
 }
 
 const BlogActionsDropdown: React.FC<BlogActionsDropdownProps> = ({
@@ -25,6 +28,7 @@ const BlogActionsDropdown: React.FC<BlogActionsDropdownProps> = ({
   onEdit,
   onDelete,
   onToggleFeatured,
+  onToggleStatus,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -115,6 +119,31 @@ const BlogActionsDropdown: React.FC<BlogActionsDropdownProps> = ({
               <Edit className="w-4 h-4 text-yellow-500" />
               <span>Edit Blog</span>
             </button>
+
+            {/* NEW: Toggle Publish Status */}
+            {blog.status === "published" ? (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleAction(() => onToggleStatus?.(blog));
+                }}
+                className="w-full flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-100"
+              >
+                <XCircle className="w-4 h-4 text-orange-500" />
+                <span>Unpublish</span>
+              </button>
+            ) : (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleAction(() => onToggleStatus?.(blog));
+                }}
+                className="w-full flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-100"
+              >
+                <CheckCircle className="w-4 h-4 text-green-500" />
+                <span>Publish</span>
+              </button>
+            )}
 
             {/* Toggle Featured */}
             {blog.featured ? (

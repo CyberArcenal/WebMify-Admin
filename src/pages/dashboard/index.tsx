@@ -22,6 +22,13 @@ import {
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import dashboardAPI, { DashboardData } from "@/api/analytics/dashboard";
+import ContactMessageViewDialog from "../contact-messages/components/ContactMessageViewDialog";
+import { useContactMessageView } from "../contact-messages/hooks/useContactMessageView";
+import { ContactMessageWithDetails } from "../contact-messages/hooks/useContactMessages";
+import contactMessageAPI from "@/api/core/contact_message";
+import { showError, showSuccess } from "@/utils/notification";
+import BlogViewDialog from "../blog/components/BlogViewDialog";
+import { useBlogView } from "../blog/hooks/useBlogView";
 
 const DashboardPage: React.FC = () => {
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(
@@ -31,6 +38,20 @@ const DashboardPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const navigate = useNavigate();
+
+  const messageViewDialog = useContactMessageView();
+  const blogViewDialog = useBlogView();
+  const handleToggleRead = async (message: ContactMessageWithDetails) => {
+    try {
+      await contactMessageAPI.patch(message.id, { is_read: !message.is_read });
+      showSuccess(
+        message.is_read ? "Message marked as unread" : "Message marked as read",
+      );
+      fetchDashboardData();
+    } catch (err: any) {
+      showError(err.message);
+    }
+  };
 
   const fetchDashboardData = async () => {
     try {
@@ -352,7 +373,7 @@ const DashboardPage: React.FC = () => {
               <div
                 key={blog.id}
                 className="flex items-start justify-between border-b border-[var(--border-color)] pb-3 last:border-0 cursor-pointer hover:bg-[var(--card-hover-bg)] p-2 rounded-md transition-all"
-                onClick={() => navigate(`/blog/${blog.id}`)}
+                onClick={() => {blogViewDialog.open(blog.id)}}
               >
                 <div className="flex-1">
                   <div
@@ -411,7 +432,9 @@ const DashboardPage: React.FC = () => {
               <div
                 key={msg.id}
                 className="flex items-start justify-between border-b border-[var(--border-color)] pb-3 last:border-0 cursor-pointer hover:bg-[var(--card-hover-bg)] p-2 rounded-md transition-all"
-                onClick={() => navigate(`/contact-messages/${msg.id}`)}
+                onClick={() => {
+                  messageViewDialog.open(msg.id);
+                }}
               >
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
@@ -456,6 +479,30 @@ const DashboardPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Dialogs */}
+      <ContactMessageViewDialog
+        isOpen={messageViewDialog.isOpen}
+        message={messageViewDialog.message}
+        loading={messageViewDialog.loading}
+        onClose={messageViewDialog.close}
+        onToggleRead={() => {
+          if (messageViewDialog.message) {
+            handleToggleRead(messageViewDialog.message);
+            messageViewDialog.close();
+          }
+        }}
+      />
+
+      <BlogViewDialog
+        isOpen={blogViewDialog.isOpen}
+        blog={blogViewDialog.blog}
+        comments={blogViewDialog.comments}
+        loading={blogViewDialog.loading}
+        loadingComments={blogViewDialog.loadingComments}
+        onClose={blogViewDialog.close}
+        onFetchComments={blogViewDialog.fetchComments}
+      />
     </div>
   );
 };

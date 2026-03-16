@@ -117,10 +117,15 @@ const ProfileFormDialog: React.FC<ProfileFormDialogProps> = ({
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Personal Information */}
         <div className="space-y-3">
-          <h4 className="font-medium text-[var(--sidebar-text)] border-b pb-1">Personal Information</h4>
-          
+          <h4 className="font-medium text-[var(--sidebar-text)] border-b pb-1">
+            Personal Information
+          </h4>
+
           <div>
-            <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+            <label
+              className="block text-sm font-medium mb-1"
+              style={{ color: "var(--sidebar-text)" }}
+            >
               Full Name *
             </label>
             <input
@@ -132,11 +137,16 @@ const ProfileFormDialog: React.FC<ProfileFormDialogProps> = ({
                 color: "var(--sidebar-text)",
               }}
             />
-            {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>}
+            {errors.name && (
+              <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>
+            )}
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+            <label
+              className="block text-sm font-medium mb-1"
+              style={{ color: "var(--sidebar-text)" }}
+            >
               Title *
             </label>
             <input
@@ -148,11 +158,18 @@ const ProfileFormDialog: React.FC<ProfileFormDialogProps> = ({
                 color: "var(--sidebar-text)",
               }}
             />
-            {errors.title && <p className="text-xs text-red-500 mt-1">{errors.title.message}</p>}
+            {errors.title && (
+              <p className="text-xs text-red-500 mt-1">
+                {errors.title.message}
+              </p>
+            )}
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+            <label
+              className="block text-sm font-medium mb-1"
+              style={{ color: "var(--sidebar-text)" }}
+            >
               Bio
             </label>
             <textarea
@@ -170,10 +187,15 @@ const ProfileFormDialog: React.FC<ProfileFormDialogProps> = ({
 
         {/* Contact Information */}
         <div className="space-y-3">
-          <h4 className="font-medium text-[var(--sidebar-text)] border-b pb-1">Contact Information</h4>
-          
+          <h4 className="font-medium text-[var(--sidebar-text)] border-b pb-1">
+            Contact Information
+          </h4>
+
           <div>
-            <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+            <label
+              className="block text-sm font-medium mb-1"
+              style={{ color: "var(--sidebar-text)" }}
+            >
               Email *
             </label>
             <input
@@ -186,11 +208,18 @@ const ProfileFormDialog: React.FC<ProfileFormDialogProps> = ({
                 color: "var(--sidebar-text)",
               }}
             />
-            {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email.message}</p>}
+            {errors.email && (
+              <p className="text-xs text-red-500 mt-1">
+                {errors.email.message}
+              </p>
+            )}
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+            <label
+              className="block text-sm font-medium mb-1"
+              style={{ color: "var(--sidebar-text)" }}
+            >
               Phone
             </label>
             <input
@@ -205,7 +234,10 @@ const ProfileFormDialog: React.FC<ProfileFormDialogProps> = ({
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+            <label
+              className="block text-sm font-medium mb-1"
+              style={{ color: "var(--sidebar-text)" }}
+            >
               Address
             </label>
             <input
@@ -222,10 +254,15 @@ const ProfileFormDialog: React.FC<ProfileFormDialogProps> = ({
 
         {/* Social Links */}
         <div className="space-y-3">
-          <h4 className="font-medium text-[var(--sidebar-text)] border-b pb-1">Social Links</h4>
-          
+          <h4 className="font-medium text-[var(--sidebar-text)] border-b pb-1">
+            Social Links
+          </h4>
+
           <div>
-            <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+            <label
+              className="block text-sm font-medium mb-1"
+              style={{ color: "var(--sidebar-text)" }}
+            >
               GitHub URL
             </label>
             <input
@@ -240,7 +277,10 @@ const ProfileFormDialog: React.FC<ProfileFormDialogProps> = ({
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+            <label
+              className="block text-sm font-medium mb-1"
+              style={{ color: "var(--sidebar-text)" }}
+            >
               LinkedIn URL
             </label>
             <input
@@ -255,7 +295,10 @@ const ProfileFormDialog: React.FC<ProfileFormDialogProps> = ({
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+            <label
+              className="block text-sm font-medium mb-1"
+              style={{ color: "var(--sidebar-text)" }}
+            >
               Twitter URL
             </label>
             <input
@@ -272,10 +315,15 @@ const ProfileFormDialog: React.FC<ProfileFormDialogProps> = ({
 
         {/* Resume & Profile Image */}
         <div className="space-y-3">
-          <h4 className="font-medium text-[var(--sidebar-text)] border-b pb-1">Resume & Profile Image</h4>
-          
+          <h4 className="font-medium text-[var(--sidebar-text)] border-b pb-1">
+            Resume & Profile Image
+          </h4>
+
           <div>
-            <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+            <label
+              className="block text-sm font-medium mb-1"
+              style={{ color: "var(--sidebar-text)" }}
+            >
               Resume URL
             </label>
             <input
@@ -290,7 +338,10 @@ const ProfileFormDialog: React.FC<ProfileFormDialogProps> = ({
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+            <label
+              className="block text-sm font-medium mb-1"
+              style={{ color: "var(--sidebar-text)" }}
+            >
               Profile Image
             </label>
             <input
@@ -314,7 +365,23 @@ const ProfileFormDialog: React.FC<ProfileFormDialogProps> = ({
 
         {/* Footer */}
         <div className="flex justify-end gap-2 pt-4 border-t border-[var(--border-color)]">
-          <Button type="button" variant="secondary" onClick={onClose}>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={async () => {
+              if (
+                !(await dialogs.confirm({
+                  title: "Cancel Form",
+                  message:
+                    "Are you sure do you want to cancel this form your data may be loss?.",
+                  confirmText: "Cancel Anyway",
+                }))
+              )
+                return;
+
+              onClose();
+            }}
+          >
             Cancel
           </Button>
           <Button type="submit" variant="success" disabled={isSubmitting}>

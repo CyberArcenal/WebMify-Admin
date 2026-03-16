@@ -104,7 +104,10 @@ const SkillFormDialog: React.FC<SkillFormDialogProps> = ({
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Name */}
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+          <label
+            className="block text-sm font-medium mb-1"
+            style={{ color: "var(--sidebar-text)" }}
+          >
             Name *
           </label>
           <input
@@ -116,12 +119,17 @@ const SkillFormDialog: React.FC<SkillFormDialogProps> = ({
               color: "var(--sidebar-text)",
             }}
           />
-          {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>}
+          {errors.name && (
+            <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>
+          )}
         </div>
 
         {/* Category */}
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+          <label
+            className="block text-sm font-medium mb-1"
+            style={{ color: "var(--sidebar-text)" }}
+          >
             Category *
           </label>
           <input
@@ -134,12 +142,19 @@ const SkillFormDialog: React.FC<SkillFormDialogProps> = ({
               color: "var(--sidebar-text)",
             }}
           />
-          {errors.category && <p className="text-xs text-red-500 mt-1">{errors.category.message}</p>}
+          {errors.category && (
+            <p className="text-xs text-red-500 mt-1">
+              {errors.category.message}
+            </p>
+          )}
         </div>
 
         {/* Proficiency */}
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+          <label
+            className="block text-sm font-medium mb-1"
+            style={{ color: "var(--sidebar-text)" }}
+          >
             Proficiency (0-100) *
           </label>
           <input
@@ -159,12 +174,19 @@ const SkillFormDialog: React.FC<SkillFormDialogProps> = ({
               color: "var(--sidebar-text)",
             }}
           />
-          {errors.proficiency && <p className="text-xs text-red-500 mt-1">{errors.proficiency.message}</p>}
+          {errors.proficiency && (
+            <p className="text-xs text-red-500 mt-1">
+              {errors.proficiency.message}
+            </p>
+          )}
         </div>
 
         {/* Icon */}
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+          <label
+            className="block text-sm font-medium mb-1"
+            style={{ color: "var(--sidebar-text)" }}
+          >
             Icon
           </label>
           <input
@@ -181,7 +203,10 @@ const SkillFormDialog: React.FC<SkillFormDialogProps> = ({
 
         {/* Order */}
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+          <label
+            className="block text-sm font-medium mb-1"
+            style={{ color: "var(--sidebar-text)" }}
+          >
             Display Order
           </label>
           <input
@@ -198,15 +223,38 @@ const SkillFormDialog: React.FC<SkillFormDialogProps> = ({
 
         {/* Featured Checkbox */}
         <div>
-          <label className="flex items-center gap-2 text-sm" style={{ color: "var(--sidebar-text)" }}>
-            <input type="checkbox" {...register("featured")} className="h-4 w-4" />
+          <label
+            className="flex items-center gap-2 text-sm"
+            style={{ color: "var(--sidebar-text)" }}
+          >
+            <input
+              type="checkbox"
+              {...register("featured")}
+              className="h-4 w-4"
+            />
             Featured
           </label>
         </div>
 
         {/* Footer */}
         <div className="flex justify-end gap-2 pt-4 border-t border-[var(--border-color)]">
-          <Button type="button" variant="secondary" onClick={onClose}>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={async () => {
+              if (
+                !(await dialogs.confirm({
+                  title: "Cancel Form",
+                  message:
+                    "Are you sure do you want to cancel this form your data may be loss?.",
+                  confirmText: "Cancel Anyway",
+                }))
+              )
+                return;
+
+              onClose();
+            }}
+          >
             Cancel
           </Button>
           <Button type="submit" variant="success" disabled={isSubmitting}>

@@ -4,7 +4,10 @@ import { useForm } from "react-hook-form";
 import Modal from "../../../components/UI/Modal";
 import Button from "../../../components/UI/Button";
 import { dialogs } from "../../../utils/dialogs";
-import projectTechStackAPI, { ProjectTechStack, ProjectTechStackCreateData } from "@/api/core/project_techstack";
+import projectTechStackAPI, {
+  ProjectTechStack,
+  ProjectTechStackCreateData,
+} from "@/api/core/project_techstack";
 
 interface ProjectTechStackFormDialogProps {
   isOpen: boolean;
@@ -18,7 +21,7 @@ interface ProjectTechStackFormDialogProps {
 
 type FormData = {
   name: string;
-  category: string;
+  category: "frontend" | "backend" | "database" | "devops" | "other";
   icon: string;
   order: number;
 };
@@ -40,7 +43,7 @@ const ProjectTechStackFormDialog: React.FC<ProjectTechStackFormDialogProps> = ({
   } = useForm<FormData>({
     defaultValues: {
       name: "",
-      category: "",
+      category: "other",
       icon: "",
       order: 0,
     },
@@ -51,7 +54,7 @@ const ProjectTechStackFormDialog: React.FC<ProjectTechStackFormDialogProps> = ({
     if (initialData) {
       reset({
         name: initialData.name || "",
-        category: initialData.category || "",
+        category: initialData.category || "other",
         icon: initialData.icon || "",
         order: initialData.order || 0,
       });
@@ -70,7 +73,13 @@ const ProjectTechStackFormDialog: React.FC<ProjectTechStackFormDialogProps> = ({
       const payload: ProjectTechStackCreateData = {
         project: projectId,
         name: data.name,
-        category: data.category || "",
+        category:
+          (data.category as
+            | "frontend"
+            | "backend"
+            | "database"
+            | "devops"
+            | "other") || "",
         icon: data.icon || "",
         order: data.order,
       };
@@ -81,7 +90,7 @@ const ProjectTechStackFormDialog: React.FC<ProjectTechStackFormDialogProps> = ({
         dialogs.success("Tech stack item created successfully");
       } else {
         if (!itemId) throw new Error("Item ID missing");
-        await projectTechStackAPI.update(projectId, itemId, payload);
+        await projectTechStackAPI.update(itemId, payload);
         dialogs.success("Tech stack item updated successfully");
       }
       onSuccess();
@@ -102,7 +111,10 @@ const ProjectTechStackFormDialog: React.FC<ProjectTechStackFormDialogProps> = ({
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Name */}
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+          <label
+            className="block text-sm font-medium mb-1"
+            style={{ color: "var(--sidebar-text)" }}
+          >
             Name *
           </label>
           <input
@@ -114,29 +126,42 @@ const ProjectTechStackFormDialog: React.FC<ProjectTechStackFormDialogProps> = ({
               color: "var(--sidebar-text)",
             }}
           />
-          {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>}
+          {errors.name && (
+            <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>
+          )}
         </div>
 
         {/* Category */}
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+          <label
+            className="block text-sm font-medium mb-1"
+            style={{ color: "var(--sidebar-text)" }}
+          >
             Category
           </label>
-          <input
+          <select
             {...register("category")}
             className="compact-input w-full border rounded-md"
-            placeholder="e.g., Frontend, Backend, Database"
             style={{
               backgroundColor: "var(--card-bg)",
               borderColor: "var(--border-color)",
               color: "var(--sidebar-text)",
             }}
-          />
+          >
+            <option value="other">Other</option>
+            <option value="frontend">Front End</option>
+            <option value="backend">Back End</option>
+            <option value="database">Database</option>
+            <option value="devops">DevOps</option>
+          </select>
         </div>
 
         {/* Icon */}
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+          <label
+            className="block text-sm font-medium mb-1"
+            style={{ color: "var(--sidebar-text)" }}
+          >
             Icon
           </label>
           <input
@@ -153,7 +178,10 @@ const ProjectTechStackFormDialog: React.FC<ProjectTechStackFormDialogProps> = ({
 
         {/* Order */}
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+          <label
+            className="block text-sm font-medium mb-1"
+            style={{ color: "var(--sidebar-text)" }}
+          >
             Display Order
           </label>
           <input
@@ -170,7 +198,23 @@ const ProjectTechStackFormDialog: React.FC<ProjectTechStackFormDialogProps> = ({
 
         {/* Footer */}
         <div className="flex justify-end gap-2 pt-4 border-t border-[var(--border-color)]">
-          <Button type="button" variant="secondary" onClick={onClose}>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={async () => {
+              if (
+                !(await dialogs.confirm({
+                  title: "Cancel Form",
+                  message:
+                    "Are you sure do you want to cancel this form your data may be loss?.",
+                  confirmText: "Cancel Anyway",
+                }))
+              )
+                return;
+
+              onClose();
+            }}
+          >
             Cancel
           </Button>
           <Button type="submit" variant="success" disabled={isSubmitting}>

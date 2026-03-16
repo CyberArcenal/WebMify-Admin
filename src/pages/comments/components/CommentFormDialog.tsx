@@ -1,8 +1,10 @@
-// src/pages/comments/components/CommentFormDialog.tsx
 import React, { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import Modal from "../../../components/UI/Modal";
 import Button from "../../../components/UI/Button";
+import ProjectSelect from "../../../components/Selects/Project";
+import BlogSelect from "../../../components/Selects/Blog";
+import CommentSelect from "../../../components/Selects/Comment";
 import { dialogs } from "../../../utils/dialogs";
 import commentAPI, { Comment, CommentCreateData } from "@/api/core/comment";
 
@@ -19,9 +21,9 @@ type FormData = {
   name: string;
   email: string;
   content: string;
-  parent: string; // string for input, will convert to number or null
-  blog: string;
-  project: string;
+  parent: number | null;
+  blog: number | null;
+  project: number | null;
   approved: boolean;
 };
 
@@ -37,15 +39,16 @@ const CommentFormDialog: React.FC<CommentFormDialogProps> = ({
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
     defaultValues: {
       name: "",
       email: "",
       content: "",
-      parent: "",
-      blog: "",
-      project: "",
+      parent: null,
+      blog: null,
+      project: null,
       approved: false,
     },
   });
@@ -57,9 +60,15 @@ const CommentFormDialog: React.FC<CommentFormDialogProps> = ({
         name: initialData.author?.name || "",
         email: initialData.author?.email || "",
         content: initialData.content || "",
-        parent: initialData.parent?.toString() || "",
-        blog: initialData.content_object?.type === "blog" ? initialData.content_object.id.toString() : "",
-        project: initialData.content_object?.type === "project" ? initialData.content_object.id.toString() : "",
+        parent: initialData.parent || null,
+        blog:
+          initialData.content_object?.type === "blog"
+            ? initialData.content_object.id
+            : null,
+        project:
+          initialData.content_object?.type === "project"
+            ? initialData.content_object.id
+            : null,
         approved: initialData.approved || false,
       });
     } else {
@@ -73,9 +82,9 @@ const CommentFormDialog: React.FC<CommentFormDialogProps> = ({
         name: data.name || undefined,
         email: data.email || undefined,
         content: data.content,
-        parent: data.parent ? parseInt(data.parent) : null,
-        blog: data.blog ? parseInt(data.blog) : null,
-        project: data.project ? parseInt(data.project) : null,
+        parent: data.parent, // already number or null
+        blog: data.blog,
+        project: data.project,
       };
 
       if (mode === "add") {
@@ -84,7 +93,6 @@ const CommentFormDialog: React.FC<CommentFormDialogProps> = ({
         dialogs.success("Comment created successfully");
       } else {
         if (!commentId) throw new Error("Comment ID missing");
-        // For edit, we might also include approved status if needed
         const updatePayload: any = { ...payload };
         if (data.approved !== undefined) updatePayload.approved = data.approved;
         await commentAPI.update(commentId, updatePayload);
@@ -108,7 +116,10 @@ const CommentFormDialog: React.FC<CommentFormDialogProps> = ({
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Name */}
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+          <label
+            className="block text-sm font-medium mb-1"
+            style={{ color: "var(--sidebar-text)" }}
+          >
             Author Name
           </label>
           <input
@@ -124,7 +135,10 @@ const CommentFormDialog: React.FC<CommentFormDialogProps> = ({
 
         {/* Email */}
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+          <label
+            className="block text-sm font-medium mb-1"
+            style={{ color: "var(--sidebar-text)" }}
+          >
             Author Email
           </label>
           <input
@@ -141,7 +155,10 @@ const CommentFormDialog: React.FC<CommentFormDialogProps> = ({
 
         {/* Content */}
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+          <label
+            className="block text-sm font-medium mb-1"
+            style={{ color: "var(--sidebar-text)" }}
+          >
             Content *
           </label>
           <textarea
@@ -154,67 +171,90 @@ const CommentFormDialog: React.FC<CommentFormDialogProps> = ({
               color: "var(--sidebar-text)",
             }}
           />
-          {errors.content && <p className="text-xs text-red-500 mt-1">{errors.content.message}</p>}
+          {errors.content && (
+            <p className="text-xs text-red-500 mt-1">
+              {errors.content.message}
+            </p>
+          )}
         </div>
 
-        {/* Parent */}
+        {/* Parent Comment */}
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
-            Parent Comment ID (optional)
+          <label
+            className="block text-sm font-medium mb-1"
+            style={{ color: "var(--sidebar-text)" }}
+          >
+            Parent Comment
           </label>
-          <input
-            type="number"
-            {...register("parent")}
-            className="compact-input w-full border rounded-md"
-            style={{
-              backgroundColor: "var(--card-bg)",
-              borderColor: "var(--border-color)",
-              color: "var(--sidebar-text)",
-            }}
+          <Controller
+            name="parent"
+            control={control}
+            render={({ field }) => (
+              <CommentSelect
+                value={field.value}
+                onChange={(id) => field.onChange(id)}
+                placeholder="Select a parent comment (optional)"
+                // Optionally filter by content type if blog/project already chosen
+                // contentType={...} // could be derived from watched blog/project
+              />
+            )}
           />
         </div>
 
-        {/* Blog ID */}
+        {/* Blog */}
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
-            Blog ID
+          <label
+            className="block text-sm font-medium mb-1"
+            style={{ color: "var(--sidebar-text)" }}
+          >
+            Blog
           </label>
-          <input
-            type="number"
-            {...register("blog")}
-            className="compact-input w-full border rounded-md"
-            style={{
-              backgroundColor: "var(--card-bg)",
-              borderColor: "var(--border-color)",
-              color: "var(--sidebar-text)",
-            }}
+          <Controller
+            name="blog"
+            control={control}
+            render={({ field }) => (
+              <BlogSelect
+                value={field.value}
+                onChange={(id) => field.onChange(id)}
+                placeholder="Select a blog (optional)"
+              />
+            )}
           />
-          <p className="text-xs text-[var(--text-secondary)] mt-1">Leave blank if not for a blog</p>
         </div>
 
-        {/* Project ID */}
+        {/* Project */}
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
-            Project ID
+          <label
+            className="block text-sm font-medium mb-1"
+            style={{ color: "var(--sidebar-text)" }}
+          >
+            Project
           </label>
-          <input
-            type="number"
-            {...register("project")}
-            className="compact-input w-full border rounded-md"
-            style={{
-              backgroundColor: "var(--card-bg)",
-              borderColor: "var(--border-color)",
-              color: "var(--sidebar-text)",
-            }}
+          <Controller
+            name="project"
+            control={control}
+            render={({ field }) => (
+              <ProjectSelect
+                value={field.value}
+                onChange={(id) => field.onChange(id)}
+                placeholder="Select a project (optional)"
+              />
+            )}
           />
-          <p className="text-xs text-[var(--text-secondary)] mt-1">Leave blank if not for a project</p>
         </div>
 
-        {/* Approved Checkbox (only visible in edit mode) */}
+        {/* Approved Checkbox (only in edit mode) */}
         {mode === "edit" && (
           <div>
-            <label className="flex items-center gap-2 text-sm" style={{ color: "var(--sidebar-text)" }}>
-              <input type="checkbox" {...register("approved")} className="h-4 w-4" />
+            <label
+              className="flex items-center gap-2 text-sm"
+              style={{ color: "var(--sidebar-text)" }}
+            >
+              <input
+                type="checkbox"
+                {...register("approved")}
+                className="h-4 w-4"
+              />
               Approved
             </label>
           </div>
@@ -222,7 +262,23 @@ const CommentFormDialog: React.FC<CommentFormDialogProps> = ({
 
         {/* Footer */}
         <div className="flex justify-end gap-2 pt-4 border-t border-[var(--border-color)]">
-          <Button type="button" variant="secondary" onClick={onClose}>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={async () => {
+              if (
+                !(await dialogs.confirm({
+                  title: "Cancel Form",
+                  message:
+                    "Are you sure do you want to cancel this form your data may be loss?.",
+                  confirmText: "Cancel Anyway",
+                }))
+              )
+                return;
+
+              onClose();
+            }}
+          >
             Cancel
           </Button>
           <Button type="submit" variant="success" disabled={isSubmitting}>

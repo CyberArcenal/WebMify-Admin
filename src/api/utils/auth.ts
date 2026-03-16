@@ -36,6 +36,20 @@ export interface RefreshTokenResponse {
   message: string;
 }
 
+// Verify token response types
+export interface VerifySuccessResponse {
+  valid: true;
+  user: UserData;
+  message: string;
+}
+
+export interface VerifyErrorResponse {
+  valid: false;
+  detail: string;
+}
+
+export type VerifyResponse = VerifySuccessResponse | VerifyErrorResponse;
+
 class AuthAPI {
   /**
    * Log in using username/email and password.
@@ -58,6 +72,25 @@ class AuthAPI {
       return response.data;
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || 'Token refresh failed');
+    }
+  }
+
+  /**
+   * Verify if the current access token (or provided token) is valid.
+   * @param token Optional token to verify. If not provided, uses the token from authStore (via interceptor).
+   */
+  async verify(token?: string): Promise<VerifyResponse> {
+    try {
+      // If a token is provided, we can either set it in the request body or in headers.
+      // apiClient might already have an interceptor that adds the token from authStore.
+      // For flexibility, we'll include it in the body if provided.
+      const payload = token ? { token } : {};
+      const response = await apiClient.post<VerifySuccessResponse>('/verify/', payload);
+      return response.data;
+    } catch (error: any) {
+      // If the request fails (401, 400, etc.), we return the error detail from the response.
+      const detail = error.response?.data?.detail || 'Token verification failed';
+      return { valid: false, detail };
     }
   }
 

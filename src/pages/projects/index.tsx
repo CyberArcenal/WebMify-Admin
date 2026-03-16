@@ -47,7 +47,9 @@ const ProjectsPage: React.FC = () => {
   const handleToggleFeatured = async (project: ProjectWithDetails) => {
     try {
       await projectAPI.patch(project.id, { featured: !project.featured });
-      showSuccess(project.featured ? 'Featured removed' : 'Project marked as featured');
+      showSuccess(
+        project.featured ? "Featured removed" : "Project marked as featured",
+      );
       reload();
     } catch (err: any) {
       showError(err.message);
@@ -360,7 +362,10 @@ const ProjectsPage: React.FC = () => {
         project={viewDialog.project}
         loading={viewDialog.loading}
         onClose={viewDialog.close}
-        onEdit={formDialog.openEdit}
+        onEdit={(project) => {
+          viewDialog.close();
+          formDialog.openEdit(project);
+        }}
       />
     </div>
   );

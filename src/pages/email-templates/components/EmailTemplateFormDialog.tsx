@@ -4,7 +4,10 @@ import { useForm } from "react-hook-form";
 import Modal from "../../../components/UI/Modal";
 import Button from "../../../components/UI/Button";
 import { dialogs } from "../../../utils/dialogs";
-import emailTemplateAPI, { EmailTemplate, EmailTemplateCreateData } from "@/api/core/email_template";
+import emailTemplateAPI, {
+  EmailTemplate,
+  EmailTemplateCreateData,
+} from "@/api/core/email_template";
 
 interface EmailTemplateFormDialogProps {
   isOpen: boolean;
@@ -92,7 +95,10 @@ const EmailTemplateFormDialog: React.FC<EmailTemplateFormDialogProps> = ({
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Name */}
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+          <label
+            className="block text-sm font-medium mb-1"
+            style={{ color: "var(--sidebar-text)" }}
+          >
             Template Name *
           </label>
           <input
@@ -104,12 +110,17 @@ const EmailTemplateFormDialog: React.FC<EmailTemplateFormDialogProps> = ({
               color: "var(--sidebar-text)",
             }}
           />
-          {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>}
+          {errors.name && (
+            <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>
+          )}
         </div>
 
         {/* Subject */}
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+          <label
+            className="block text-sm font-medium mb-1"
+            style={{ color: "var(--sidebar-text)" }}
+          >
             Subject *
           </label>
           <input
@@ -121,12 +132,19 @@ const EmailTemplateFormDialog: React.FC<EmailTemplateFormDialogProps> = ({
               color: "var(--sidebar-text)",
             }}
           />
-          {errors.subject && <p className="text-xs text-red-500 mt-1">{errors.subject.message}</p>}
+          {errors.subject && (
+            <p className="text-xs text-red-500 mt-1">
+              {errors.subject.message}
+            </p>
+          )}
         </div>
 
         {/* Content */}
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+          <label
+            className="block text-sm font-medium mb-1"
+            style={{ color: "var(--sidebar-text)" }}
+          >
             Content *
           </label>
           <textarea
@@ -139,7 +157,11 @@ const EmailTemplateFormDialog: React.FC<EmailTemplateFormDialogProps> = ({
               color: "var(--sidebar-text)",
             }}
           />
-          {errors.content && <p className="text-xs text-red-500 mt-1">{errors.content.message}</p>}
+          {errors.content && (
+            <p className="text-xs text-red-500 mt-1">
+              {errors.content.message}
+            </p>
+          )}
           <p className="text-xs text-[var(--text-secondary)] mt-1">
             You can use variables like {"{{name}}"}, {"{{email}}"} etc.
           </p>
@@ -147,7 +169,23 @@ const EmailTemplateFormDialog: React.FC<EmailTemplateFormDialogProps> = ({
 
         {/* Footer */}
         <div className="flex justify-end gap-2 pt-4 border-t border-[var(--border-color)]">
-          <Button type="button" variant="secondary" onClick={onClose}>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={async () => {
+              if (
+                !(await dialogs.confirm({
+                  title: "Cancel Form",
+                  message:
+                    "Are you sure do you want to cancel this form your data may be loss?.",
+                  confirmText: "Cancel Anyway",
+                }))
+              )
+                return;
+
+              onClose();
+            }}
+          >
             Cancel
           </Button>
           <Button type="submit" variant="success" disabled={isSubmitting}>

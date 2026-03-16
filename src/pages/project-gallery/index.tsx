@@ -7,7 +7,9 @@ import Pagination from "../../components/Shared/Pagination1";
 import { dialogs } from "../../utils/dialogs";
 import { showSuccess, showError } from "../../utils/notification";
 
-import useProjectGallery, { type ProjectGalleryImageWithDetails } from "./hooks/useProjectGallery";
+import useProjectGallery, {
+  type ProjectGalleryImageWithDetails,
+} from "./hooks/useProjectGallery";
 import projectGalleryAPI from "@/api/core/project_gallery";
 import projectAPI, { Project } from "@/api/core/project";
 import useProjectGalleryForm from "./hooks/useProjectGalleryForm";
@@ -16,10 +18,13 @@ import FilterBar from "./components/FilterBar";
 import ProjectGalleryTable from "./components/ProjectGalleryTable";
 import ProjectGalleryFormDialog from "./components/ProjectGalleryFormDialog";
 import ProjectGalleryViewDialog from "./components/ProjectGalleryViewDialog";
+import ProjectSelect from "@/components/Selects/Project";
 
 const ProjectGalleryPage: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
-  const [selectedProjectId, setSelectedProjectId] = useState<number | null>(null);
+  const [selectedProjectId, setSelectedProjectId] = useState<number | null>(
+    null,
+  );
   const [loadingProjects, setLoadingProjects] = useState(true);
 
   const {
@@ -92,7 +97,9 @@ const ProjectGalleryPage: React.FC = () => {
     if (!confirmed) return;
     try {
       await Promise.all(
-        selectedImages?.map((id) => projectGalleryAPI.delete(selectedProjectId, id)),
+        selectedImages?.map((id) =>
+          projectGalleryAPI.delete(selectedProjectId, id),
+        ),
       );
       showSuccess(`${selectedImages?.length} images deleted.`);
       setSelectedImages([]);
@@ -170,26 +177,19 @@ const ProjectGalleryPage: React.FC = () => {
 
       {/* Project Selector */}
       <div className="mb-4">
-        <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+        <label
+          className="block text-sm font-medium mb-1"
+          style={{ color: "var(--sidebar-text)" }}
+        >
           Select Project
         </label>
-        <select
-          value={selectedProjectId || ""}
-          onChange={(e) => setSelectedProjectId(e.target.value ? Number(e.target.value) : null)}
-          className="compact-input w-full max-w-md border rounded-md"
-          style={{
-            backgroundColor: "var(--card-bg)",
-            borderColor: "var(--border-color)",
-            color: "var(--sidebar-text)",
+        <ProjectSelect
+          disabled={loading}
+          onChange={(projectId, project) => {
+            setSelectedProjectId(projectId);
           }}
-        >
-          <option value="">-- Choose a project --</option>
-          {projects.map((project) => (
-            <option key={project.id} value={project.id}>
-              {project.title}
-            </option>
-          ))}
-        </select>
+          value={selectedProjectId || null}
+        />
       </div>
 
       {/* Summary Banner */}

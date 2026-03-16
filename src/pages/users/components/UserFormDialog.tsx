@@ -153,7 +153,10 @@ const UserFormDialog: React.FC<UserFormDialogProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Username */}
           <div>
-            <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+            <label
+              className="block text-sm font-medium mb-1"
+              style={{ color: "var(--sidebar-text)" }}
+            >
               Username *
             </label>
             <input
@@ -165,12 +168,19 @@ const UserFormDialog: React.FC<UserFormDialogProps> = ({
                 color: "var(--sidebar-text)",
               }}
             />
-            {errors.username && <p className="text-xs text-red-500 mt-1">{errors.username.message}</p>}
+            {errors.username && (
+              <p className="text-xs text-red-500 mt-1">
+                {errors.username.message}
+              </p>
+            )}
           </div>
 
           {/* Email */}
           <div>
-            <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+            <label
+              className="block text-sm font-medium mb-1"
+              style={{ color: "var(--sidebar-text)" }}
+            >
               Email
             </label>
             <input
@@ -187,12 +197,20 @@ const UserFormDialog: React.FC<UserFormDialogProps> = ({
 
           {/* Password */}
           <div>
-            <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
-              {mode === "add" ? "Password *" : "Password (leave empty to keep current)"}
+            <label
+              className="block text-sm font-medium mb-1"
+              style={{ color: "var(--sidebar-text)" }}
+            >
+              {mode === "add"
+                ? "Password *"
+                : "Password (leave empty to keep current)"}
             </label>
             <input
               type="password"
-              {...register("password", mode === "add" ? { required: "Password is required" } : {})}
+              {...register(
+                "password",
+                mode === "add" ? { required: "Password is required" } : {},
+              )}
               className="compact-input w-full border rounded-md"
               style={{
                 backgroundColor: "var(--card-bg)",
@@ -200,18 +218,26 @@ const UserFormDialog: React.FC<UserFormDialogProps> = ({
                 color: "var(--sidebar-text)",
               }}
             />
-            {errors.password && <p className="text-xs text-red-500 mt-1">{errors.password.message}</p>}
+            {errors.password && (
+              <p className="text-xs text-red-500 mt-1">
+                {errors.password.message}
+              </p>
+            )}
           </div>
 
           {/* Confirm Password */}
           <div>
-            <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+            <label
+              className="block text-sm font-medium mb-1"
+              style={{ color: "var(--sidebar-text)" }}
+            >
               Confirm Password
             </label>
             <input
               type="password"
               {...register("confirm_password", {
-                validate: (value) => !password || value === password || "Passwords do not match",
+                validate: (value) =>
+                  !password || value === password || "Passwords do not match",
               })}
               className="compact-input w-full border rounded-md"
               style={{
@@ -220,12 +246,19 @@ const UserFormDialog: React.FC<UserFormDialogProps> = ({
                 color: "var(--sidebar-text)",
               }}
             />
-            {errors.confirm_password && <p className="text-xs text-red-500 mt-1">{errors.confirm_password.message}</p>}
+            {errors.confirm_password && (
+              <p className="text-xs text-red-500 mt-1">
+                {errors.confirm_password.message}
+              </p>
+            )}
           </div>
 
           {/* First Name */}
           <div>
-            <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+            <label
+              className="block text-sm font-medium mb-1"
+              style={{ color: "var(--sidebar-text)" }}
+            >
               First Name
             </label>
             <input
@@ -241,7 +274,10 @@ const UserFormDialog: React.FC<UserFormDialogProps> = ({
 
           {/* Last Name */}
           <div>
-            <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+            <label
+              className="block text-sm font-medium mb-1"
+              style={{ color: "var(--sidebar-text)" }}
+            >
               Last Name
             </label>
             <input
@@ -257,7 +293,10 @@ const UserFormDialog: React.FC<UserFormDialogProps> = ({
 
           {/* Phone Number */}
           <div>
-            <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+            <label
+              className="block text-sm font-medium mb-1"
+              style={{ color: "var(--sidebar-text)" }}
+            >
               Phone Number
             </label>
             <input
@@ -273,7 +312,10 @@ const UserFormDialog: React.FC<UserFormDialogProps> = ({
 
           {/* User Type */}
           <div>
-            <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+            <label
+              className="block text-sm font-medium mb-1"
+              style={{ color: "var(--sidebar-text)" }}
+            >
               User Type
             </label>
             <select
@@ -295,7 +337,10 @@ const UserFormDialog: React.FC<UserFormDialogProps> = ({
 
           {/* Status */}
           <div>
-            <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+            <label
+              className="block text-sm font-medium mb-1"
+              style={{ color: "var(--sidebar-text)" }}
+            >
               Status
             </label>
             <select
@@ -318,20 +363,41 @@ const UserFormDialog: React.FC<UserFormDialogProps> = ({
         {/* Checkboxes */}
         <div className="space-y-2">
           <div>
-            <label className="flex items-center gap-2 text-sm" style={{ color: "var(--sidebar-text)" }}>
-              <input type="checkbox" {...register("is_active")} className="h-4 w-4" />
+            <label
+              className="flex items-center gap-2 text-sm"
+              style={{ color: "var(--sidebar-text)" }}
+            >
+              <input
+                type="checkbox"
+                {...register("is_active")}
+                className="h-4 w-4"
+              />
               Active
             </label>
           </div>
           <div>
-            <label className="flex items-center gap-2 text-sm" style={{ color: "var(--sidebar-text)" }}>
-              <input type="checkbox" {...register("is_staff")} className="h-4 w-4" />
+            <label
+              className="flex items-center gap-2 text-sm"
+              style={{ color: "var(--sidebar-text)" }}
+            >
+              <input
+                type="checkbox"
+                {...register("is_staff")}
+                className="h-4 w-4"
+              />
               Staff
             </label>
           </div>
           <div>
-            <label className="flex items-center gap-2 text-sm" style={{ color: "var(--sidebar-text)" }}>
-              <input type="checkbox" {...register("is_superuser")} className="h-4 w-4" />
+            <label
+              className="flex items-center gap-2 text-sm"
+              style={{ color: "var(--sidebar-text)" }}
+            >
+              <input
+                type="checkbox"
+                {...register("is_superuser")}
+                className="h-4 w-4"
+              />
               Superuser
             </label>
           </div>
@@ -339,7 +405,23 @@ const UserFormDialog: React.FC<UserFormDialogProps> = ({
 
         {/* Footer */}
         <div className="flex justify-end gap-2 pt-4 border-t border-[var(--border-color)]">
-          <Button type="button" variant="secondary" onClick={onClose}>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={async () => {
+              if (
+                !(await dialogs.confirm({
+                  title: "Cancel Form",
+                  message:
+                    "Are you sure do you want to cancel this form your data may be loss?.",
+                  confirmText: "Cancel Anyway",
+                }))
+              )
+                return;
+
+              onClose();
+            }}
+          >
             Cancel
           </Button>
           <Button type="submit" variant="success" disabled={isSubmitting}>

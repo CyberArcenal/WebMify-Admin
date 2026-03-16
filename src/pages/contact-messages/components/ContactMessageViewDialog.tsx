@@ -1,5 +1,5 @@
 // src/pages/contact-messages/components/ContactMessageViewDialog.tsx
-import React from "react";
+import React, { useEffect } from "react";
 import Modal from "../../../components/UI/Modal";
 import Button from "../../../components/UI/Button";
 import {
@@ -30,6 +30,10 @@ const ContactMessageViewDialog: React.FC<ContactMessageViewDialogProps> = ({
   onToggleRead,
 }) => {
   if (!message && !loading) return null;
+
+  useEffect(() => {
+    onToggleRead?.();
+  }, [])
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Message Details" size="lg">
@@ -76,15 +80,6 @@ const ContactMessageViewDialog: React.FC<ContactMessageViewDialogProps> = ({
                   )}
                 </span>
               </div>
-              {onToggleRead && (
-                <Button
-                  variant={message.is_read ? "warning" : "success"}
-                  size="sm"
-                  onClick={onToggleRead}
-                >
-                  {message.is_read ? "Mark Unread" : "Mark Read"}
-                </Button>
-              )}
             </div>
           </div>
 

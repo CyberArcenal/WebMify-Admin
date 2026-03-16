@@ -7,7 +7,7 @@ export interface ProjectTechStack {
   project: number;
   project_title?: string;
   name: string;
-  category: string;
+  category: "frontend" | "backend" | "database" | "devops" | "other";
   icon: string;
   order: number;
 }
@@ -15,7 +15,7 @@ export interface ProjectTechStack {
 export interface ProjectTechStackCreateData {
   project: number;
   name: string;
-  category?: string;
+  category: "frontend" | "backend" | "database" | "devops" | "other";
   icon?: string;
   order?: number;
 }

@@ -59,9 +59,12 @@ const StatsFormDialog: React.FC<StatsFormDialogProps> = ({
       if (data.client_satisfaction < 0 || data.client_satisfaction > 100) {
         throw new Error("Client satisfaction must be between 0 and 100");
       }
-      if (data.projects_completed < 0) throw new Error("Projects completed must be non-negative");
-      if (data.years_experience < 0) throw new Error("Years experience must be non-negative");
-      if (data.happy_clients < 0) throw new Error("Happy clients must be non-negative");
+      if (data.projects_completed < 0)
+        throw new Error("Projects completed must be non-negative");
+      if (data.years_experience < 0)
+        throw new Error("Years experience must be non-negative");
+      if (data.happy_clients < 0)
+        throw new Error("Happy clients must be non-negative");
 
       await onSuccess(data);
     } catch (err: any) {
@@ -80,7 +83,10 @@ const StatsFormDialog: React.FC<StatsFormDialogProps> = ({
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Projects Completed */}
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+          <label
+            className="block text-sm font-medium mb-1"
+            style={{ color: "var(--sidebar-text)" }}
+          >
             Projects Completed *
           </label>
           <input
@@ -99,12 +105,19 @@ const StatsFormDialog: React.FC<StatsFormDialogProps> = ({
               color: "var(--sidebar-text)",
             }}
           />
-          {errors.projects_completed && <p className="text-xs text-red-500 mt-1">{errors.projects_completed.message}</p>}
+          {errors.projects_completed && (
+            <p className="text-xs text-red-500 mt-1">
+              {errors.projects_completed.message}
+            </p>
+          )}
         </div>
 
         {/* Client Satisfaction */}
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+          <label
+            className="block text-sm font-medium mb-1"
+            style={{ color: "var(--sidebar-text)" }}
+          >
             Client Satisfaction (%) *
           </label>
           <input
@@ -125,12 +138,19 @@ const StatsFormDialog: React.FC<StatsFormDialogProps> = ({
               color: "var(--sidebar-text)",
             }}
           />
-          {errors.client_satisfaction && <p className="text-xs text-red-500 mt-1">{errors.client_satisfaction.message}</p>}
+          {errors.client_satisfaction && (
+            <p className="text-xs text-red-500 mt-1">
+              {errors.client_satisfaction.message}
+            </p>
+          )}
         </div>
 
         {/* Years Experience */}
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+          <label
+            className="block text-sm font-medium mb-1"
+            style={{ color: "var(--sidebar-text)" }}
+          >
             Years Experience *
           </label>
           <input
@@ -149,12 +169,19 @@ const StatsFormDialog: React.FC<StatsFormDialogProps> = ({
               color: "var(--sidebar-text)",
             }}
           />
-          {errors.years_experience && <p className="text-xs text-red-500 mt-1">{errors.years_experience.message}</p>}
+          {errors.years_experience && (
+            <p className="text-xs text-red-500 mt-1">
+              {errors.years_experience.message}
+            </p>
+          )}
         </div>
 
         {/* Happy Clients */}
         <div>
-          <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+          <label
+            className="block text-sm font-medium mb-1"
+            style={{ color: "var(--sidebar-text)" }}
+          >
             Happy Clients *
           </label>
           <input
@@ -173,12 +200,32 @@ const StatsFormDialog: React.FC<StatsFormDialogProps> = ({
               color: "var(--sidebar-text)",
             }}
           />
-          {errors.happy_clients && <p className="text-xs text-red-500 mt-1">{errors.happy_clients.message}</p>}
+          {errors.happy_clients && (
+            <p className="text-xs text-red-500 mt-1">
+              {errors.happy_clients.message}
+            </p>
+          )}
         </div>
 
         {/* Footer */}
         <div className="flex justify-end gap-2 pt-4 border-t border-[var(--border-color)]">
-          <Button type="button" variant="secondary" onClick={onClose}>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={async () => {
+              if (
+                !(await dialogs.confirm({
+                  title: "Cancel Form",
+                  message:
+                    "Are you sure do you want to cancel this form your data may be loss?.",
+                  confirmText: "Cancel Anyway",
+                }))
+              )
+                return;
+
+              onClose();
+            }}
+          >
             Cancel
           </Button>
           <Button type="submit" variant="success" disabled={isSubmitting}>
