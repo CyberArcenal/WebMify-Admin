@@ -67,7 +67,7 @@ const LoginPage: React.FC = () => {
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[var(--primary-color)] text-white mb-4">
             <LogIn className="w-8 h-8" />
           </div>
-          <h1 className="text-2xl font-bold text-[var(--sidebar-text)]">PortMify</h1>
+          <h1 className="text-2xl font-bold text-[var(--sidebar-text)]">WebMify-Admin</h1>
           <p className="text-sm text-[var(--text-secondary)] mt-1">Sign in to manage your content</p>
         </div>
 
