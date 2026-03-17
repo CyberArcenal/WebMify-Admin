@@ -1,6 +1,6 @@
 // components/Sidebar.tsx (Portfolio Admin)
 import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   FileText,
@@ -30,8 +30,10 @@ import {
   Palette,
   FolderTree,
   BellElectricIcon,
+  LogOut,
 } from "lucide-react";
 import { version, name } from "../../../package.json";
+import { authStore } from "@/lib/authStore";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -54,6 +56,7 @@ export function toTitleCase(str: string) {
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const title = toTitleCase(name);
   const [openDropdowns, setOpenDropdowns] = useState<Record<string, boolean>>(
     {},
@@ -403,13 +406,39 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
       {/* Footer */}
       <div className="p-4 border-t border-[var(--sidebar-border)] text-center flex-shrink-0">
         {isOpen ? (
-          <p className="text-xs text-[var(--sidebar-text)]">
-            {version} • © {new Date().getFullYear()} {name}
-          </p>
+          <div className="flex flex-col items-center space-y-2">
+            <button
+              onClick={() => {authStore.makeLogOut(navigate)}}
+              className="p-2 rounded-full transition-all duration-200 
+                   text-[var(--sidebar-button-text)] 
+                   hover:bg-green-500 hover:text-white 
+                   focus:outline-none focus:ring-2 focus:ring-green-400 
+                   shadow-sm hover:shadow-md"
+              title="Logout"
+            >
+              <LogOut size={18} strokeWidth={2} />
+            </button>
+            <p className="text-xs text-[var(--sidebar-text)]">
+              {version} • © {new Date().getFullYear()} {name}
+            </p>
+          </div>
         ) : (
-          <p className="text-xs text-[var(--sidebar-text)]">
-            © {new Date().getFullYear()}
-          </p>
+          <div className="flex flex-col items-center space-y-2">
+            <button
+              onClick={() => {authStore.makeLogOut(navigate)}}
+              className="p-2 rounded-full transition-all duration-200 
+                   text-[var(--sidebar-button-text)] 
+                   hover:bg-green-500 hover:text-white 
+                   focus:outline-none focus:ring-2 focus:ring-green-400 
+                   shadow-sm hover:shadow-md"
+              title="Logout"
+            >
+              <LogOut size={18} strokeWidth={2} />
+            </button>
+            <p className="text-xs text-[var(--sidebar-text)]">
+              © {new Date().getFullYear()}
+            </p>
+          </div>
         )}
       </div>
     </div>

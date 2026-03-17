@@ -2,6 +2,7 @@
 import { showConfirm } from "@/utils/dialogs";
 import { showError, showInfo } from "@/utils/notification";
 import { global_base_url } from "./global";
+import { useNavigate } from "react-router-dom";
 
 // Minimal user data from portfolio backend
 export interface UserData {
@@ -10,8 +11,8 @@ export interface UserData {
   email: string;
   first_name: string;
   last_name: string;
-  user_type: string;      // "viewer", "customer", "staff", "manager", "admin"
-  status: string;         // "active", etc.
+  user_type: string; // "viewer", "customer", "staff", "manager", "admin"
+  status: string; // "active", etc.
 }
 
 export const EMPTY_USER: UserData = {
@@ -43,13 +44,13 @@ type AuthChangeCallback = (isAuthenticated: boolean) => void;
 // Helper to decode JWT payload (no library needed)
 function decodeJwt(token: string): any {
   try {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
     const jsonPayload = decodeURIComponent(
       atob(base64)
-        .split('')
-        .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-        .join('')
+        .split("")
+        .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+        .join(""),
     );
     return JSON.parse(jsonPayload);
   } catch {
@@ -83,7 +84,10 @@ export class AuthStore {
       localStorage.setItem(this.ACCESS_TOKEN_KEY, data.accessToken);
       localStorage.setItem(this.REFRESH_TOKEN_KEY, data.refreshToken);
       localStorage.setItem(this.USER_DATA_KEY, JSON.stringify(data.user));
-      localStorage.setItem(this.TOKEN_EXPIRATION_KEY, expirationTime.toString());
+      localStorage.setItem(
+        this.TOKEN_EXPIRATION_KEY,
+        expirationTime.toString(),
+      );
 
       this.notifyAuthChange();
       console.log("Saved auth for:", data.user.username);
@@ -225,7 +229,10 @@ export class AuthStore {
       const expirationTime = getExpirationFromToken(access);
       localStorage.setItem(this.ACCESS_TOKEN_KEY, access);
       localStorage.setItem(this.REFRESH_TOKEN_KEY, refresh);
-      localStorage.setItem(this.TOKEN_EXPIRATION_KEY, expirationTime.toString());
+      localStorage.setItem(
+        this.TOKEN_EXPIRATION_KEY,
+        expirationTime.toString(),
+      );
 
       this.notifyAuthChange();
       console.log("Tokens updated successfully");
@@ -263,7 +270,7 @@ export class AuthStore {
     window.location.hash = "/login";
   }
 
-  async makeLogOut(): Promise<boolean> {
+  makeLogOut = async (navigate: (path: string) => void): Promise<boolean> => {
     const confirmed = await showConfirm({
       title: "Log out?",
       message: "Are you sure you want to log out?",
@@ -273,9 +280,10 @@ export class AuthStore {
     });
 
     if (!confirmed) return false;
-    this.logout();
+    this.clearAuth();
+    navigate("/login");
     return true;
-  }
+  };
 
   /**
    * Subscribe to cross-tab auth state changes.
