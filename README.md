@@ -111,7 +111,6 @@ WebMify-Admin/
 │   ├── hooks/            # Custom React hooks
 │   ├── lib/              # API calls (Axios)
 │   ├── types/            # TypeScript interfaces
-│   ├── App.tsx           # Main app component
 │   └── main.tsx          # Entry point
 ├── index.html
 ├── package.json
@@ -119,13 +118,6 @@ WebMify-Admin/
 ├── vite.config.ts
 └── README.md
 ```
-
----
-
-## 🌿 Legacy Version
-
-The original **vanilla JavaScript + custom router** version is preserved in the [`v1`](../../tree/v1) branch.  
-Check it out to see the evolution of the project.
 
 ---
 
