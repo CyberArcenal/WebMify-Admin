@@ -22,6 +22,7 @@ import StatsPage from "@/pages/stats";
 import SubscribersPage from "@/pages/subscribers";
 import TestimonialsPage from "@/pages/testimonials";
 import UsersPage from "@/pages/users";
+import NotifyLogPage from "@/pages/notifyLog";
 
 // Placeholder components for pages not yet implemented
 const PlaceholderPage = ({ name }: { name: string }) => (
@@ -71,6 +72,7 @@ function App() {
           {/* System */}
           <Route path="stats" element={<StatsPage />} />
           <Route path="email-templates" element={<EmailTemplatesPage/>} />
+          <Route path="notify-logs" element={<NotifyLogPage/>} />
           <Route path="users" element={<UsersPage/>} />
 
           {/* 404 */}

@@ -1,4 +1,4 @@
-// src/api/notifyLog.ts
+// src/api/core/notifyLog.ts
 import { apiClient } from "@/lib/fetcher";
 import type { Pagination } from "../utils";
 
@@ -17,6 +17,7 @@ export interface NotifyLog {
   resend_count: number;
   sent_at: string | null;
   last_error_at: string | null;
+  metadata: Record<string, any>;
   created_at: string;
   updated_at: string;
 }
@@ -35,6 +36,7 @@ export interface NotifyLogCreateData {
   resend_count?: number;
   sent_at?: string | null;
   last_error_at?: string | null;
+  metadata: Record<string, any>;
 }
 
 export type NotifyLogUpdateData = Partial<NotifyLogCreateData>;
@@ -44,6 +46,11 @@ export interface NotifyLogListParams {
   recipient_email?: string;
   page?: number;
   page_size?: number;
+  search?: string;               // keyword search
+  start_date?: string;            // ISO date
+  end_date?: string;              // ISO date
+  sort_by?: string;               // e.g. "created_at"
+  sort_order?: "asc" | "desc";
 }
 
 export interface PaginatedResponse<T> {
@@ -53,11 +60,24 @@ export interface PaginatedResponse<T> {
   results: T[];
 }
 
+// Stats response type (matching old NotificationStats)
+export interface NotificationStats {
+  total: number;
+  last24h: number;
+  avgRetryFailed: number;
+  byStatus: {
+    queued: number;
+    sent: number;
+    failed: number;
+    resend: number;
+  };
+}
+
 class NotifyLogAPI {
   private basePath = "/api/v2/portfolio/notifylogs/";
 
   /**
-   * List notification logs (staff only).
+   * List notification logs with optional filters (staff only).
    */
   async list(params?: NotifyLogListParams): Promise<PaginatedResponse<NotifyLog>> {
     try {
@@ -135,6 +155,28 @@ class NotifyLogAPI {
       await apiClient.delete(`${this.basePath}${id}/`);
     } catch (error: any) {
       throw new Error(error.response?.data?.detail || "Failed to delete notification log");
+    }
+  }
+
+  /**
+   * Retry a failed notification (staff only).
+   */
+  async retryFailed(id: number): Promise<void> {
+    try {
+      await apiClient.post(`${this.basePath}${id}/retry/`);
+    } catch (error: any) {
+      throw new Error(error.response?.data?.detail || "Retry failed");
+    }
+  }
+
+  /**
+   * Resend a notification (staff only).
+   */
+  async resend(id: number): Promise<void> {
+    try {
+      await apiClient.post(`${this.basePath}${id}/resend/`);
+    } catch (error: any) {
+      throw new Error(error.response?.data?.detail || "Resend failed");
     }
   }
 }

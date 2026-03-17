@@ -29,6 +29,7 @@ import {
   Layers,
   Palette,
   FolderTree,
+  BellElectricIcon,
 } from "lucide-react";
 import { version, name } from "../../../package.json";
 
@@ -147,6 +148,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
       category: "system",
       children: [
         { path: "/stats", name: "Statistics", icon: BarChart3 },
+        {
+          path: "/notify-logs",
+          name: "Notify Log's",
+          icon: BellElectricIcon,
+        },
         { path: "/email-templates", name: "Email Templates", icon: MailOpen },
         { path: "/users", name: "Users", icon: Users },
       ],
