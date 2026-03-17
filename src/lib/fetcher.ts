@@ -72,6 +72,7 @@ apiClient.interceptors.response.use(
         if (newToken) {
           originalRequest.headers = originalRequest.headers || {};
           originalRequest.headers.Authorization = `Bearer ${newToken}`;
+          originalRequest.method = "post";
           return apiClient(originalRequest);
         }
         if (!authStore.isAuthenticated()) {
