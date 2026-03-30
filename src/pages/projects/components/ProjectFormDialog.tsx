@@ -89,15 +89,18 @@ const ProjectFormDialog: React.FC<ProjectFormDialogProps> = ({
   const categoryId = watch("project_type");
 
   // Auto-generate slug from title (only in add mode or if slug is empty)
-  useEffect(() => {
-    if (mode === "add" && title && !slug) {
-      const generatedSlug = title
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-|-$/g, "");
-      setValue("slug", generatedSlug);
-    }
-  }, [title, mode, setValue, slug]);
+useEffect(() => {
+  if (mode === "add" && title?.trim()) {
+    const generatedSlug = title
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, "-")  
+      .replace(/^-+|-+$/g, "");   
+
+    setValue("slug", generatedSlug);
+  }
+}, [mode, title, setValue]);
+
 
   useEffect(() => {
     const loadCategories = async () => {
@@ -199,7 +202,7 @@ const ProjectFormDialog: React.FC<ProjectFormDialogProps> = ({
         title: data.title,
         slug: data.slug,
         description: data.description,
-        project_type: data.project_type || undefined,
+        project_type: data.project_type,
         demo_url: data.demo_url || undefined,
         source_code_url: data.source_code_url || undefined,
         technologies: data.technologies,
@@ -209,6 +212,8 @@ const ProjectFormDialog: React.FC<ProjectFormDialogProps> = ({
 
       if (mode === "add") {
         if (!data.title) throw new Error("Title is required");
+        if (!data.slug) throw new Error("Slug is required");
+        if (!data.project_type) throw new Error("Project type is required");
         await projectAPI.create(payload);
         dialogs.success("Project created successfully");
       } else {

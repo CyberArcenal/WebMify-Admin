@@ -60,18 +60,20 @@ const BlogFormDialog: React.FC<BlogFormDialogProps> = ({
 
   const title = watch("title");
   const slug = watch("slug");
-  const selectedCategories = watch("categories"); // current selected category IDs
+  const selectedCategories = watch("categories");
 
   // Auto-generate slug from title (only in add mode or if slug is empty)
   useEffect(() => {
-    if (mode === "add" && title && !slug) {
+    if (mode === "add" && title?.trim()) {
       const generatedSlug = title
         .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-|-$/g, "");
+        .trim()
+        .replace(/[^a-z0-9]+/g, "-") 
+        .replace(/^-+|-+$/g, ""); 
+
       setValue("slug", generatedSlug);
     }
-  }, [title, mode, setValue, slug]);
+  }, [mode, title, setValue]);
 
   // Populate form when editing
   useEffect(() => {

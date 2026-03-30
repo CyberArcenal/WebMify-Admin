@@ -10,5 +10,5 @@ export function global_base_url(): string {
   const serverUrl = "https://fortfollio-system.vercel.app/";
 
   // For now we always return the local URL.
-  return urlLocal;
+  return serverUrl;
 }
