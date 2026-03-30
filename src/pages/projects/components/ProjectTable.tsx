@@ -44,6 +44,7 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
       web: "bg-blue-100 text-blue-700",
       mobile: "bg-green-100 text-green-700",
       design: "bg-purple-100 text-purple-700",
+      desktop: "bg-yellow-100 text-yellow-700",
       other: "bg-gray-100 text-gray-700",
     };
     const display: Record<string, string> = {
@@ -194,7 +195,7 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
                 {project.title}
               </td>
               <td className="px-4 py-2 whitespace-nowrap">
-                {getProjectTypeBadge(project.project_type)}
+                {getProjectTypeBadge(project.project_type?.name)}
               </td>
               <td className="px-4 py-2 whitespace-nowrap">
                 {project.featured ? (

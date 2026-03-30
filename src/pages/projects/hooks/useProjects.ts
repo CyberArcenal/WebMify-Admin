@@ -4,8 +4,8 @@ import { useState, useEffect, useCallback, useRef } from "react";
 
 export interface ProjectFilters {
   search: string;
-  featured: string; // 'true', 'false', ''
-  project_type: string; // e.g., 'web', 'mobile', 'design', 'other', ''
+  featured: string | undefined; // 'true', 'false', ''
+  project_type: number | null; // e.g., 1, 2, 3, 4, 5
 }
 
 export interface ProjectWithDetails extends Project {}
@@ -59,7 +59,7 @@ const useProjects = (initialFilters?: Partial<ProjectFilters>): UseProjectsRetur
   const [filters, setFilters] = useState<ProjectFilters>({
     search: "",
     featured: "",
-    project_type: "",
+    project_type: null,
     ...initialFilters,
   });
 
@@ -90,7 +90,7 @@ const useProjects = (initialFilters?: Partial<ProjectFilters>): UseProjectsRetur
       const response = await projectAPI.list(params);
       if (mountedRef.current) {
         setProjects(response.results);
-        setTotalCount(response.count);
+        setTotalCount(response.pagination.count);
         setSelectedProjects([]);
         setError(null);
       }
@@ -127,7 +127,7 @@ const useProjects = (initialFilters?: Partial<ProjectFilters>): UseProjectsRetur
     setFilters({
       search: "",
       featured: "",
-      project_type: "",
+      project_type: null,
     });
     setCurrentPage(1);
   }, []);

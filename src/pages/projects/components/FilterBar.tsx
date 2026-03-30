@@ -1,14 +1,31 @@
 // src/pages/projects/components/FilterBar.tsx
-import React from "react";
+import React, { useEffect, useState } from "react";
 import type { ProjectFilters } from "../hooks/useProjects";
+import categoryAPI, { Category } from "@/api/core/category";
+import CategorySelect from "@/components/Selects/Category";
 
 interface FilterBarProps {
   filters: ProjectFilters;
-  onFilterChange: (key: keyof ProjectFilters, value: string) => void;
+  onFilterChange: (key: keyof ProjectFilters, value: any) => void;
   onReset: () => void;
 }
 
-const FilterBar: React.FC<FilterBarProps> = ({ filters, onFilterChange, onReset }) => {
+const FilterBar: React.FC<FilterBarProps> = ({
+  filters,
+  onFilterChange,
+  onReset,
+}) => {
+  const [categories, setCategories] = useState<Category[]>([]);
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const response = await categoryAPI.list();
+        setCategories(response.results);
+      } catch (error) {}
+    };
+    loadCategories();
+  }, [onReset]);
+
   return (
     <div
       className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-sm mb-4 compact-card rounded-md border p-3"
@@ -45,22 +62,18 @@ const FilterBar: React.FC<FilterBarProps> = ({ filters, onFilterChange, onReset 
         >
           Project Type
         </label>
-        <select
+        <CategorySelect
           value={filters.project_type}
-          onChange={(e) => onFilterChange("project_type", e.target.value)}
-          className="compact-input w-full border rounded-md"
-          style={{
-            backgroundColor: "var(--card-bg)",
-            borderColor: "var(--border-color)",
-            color: "var(--sidebar-text)",
+          onChange={(
+            categoryId: number | null,
+            category?: Category,
+          ) => {
+            if (categoryId !== null) {
+     onFilterChange("project_type", categoryId)
+            }
+      
           }}
-        >
-          <option value="">All</option>
-          <option value="web">Web Development</option>
-          <option value="mobile">Mobile Development</option>
-          <option value="design">Design</option>
-          <option value="other">Other</option>
-        </select>
+        />
       </div>
 
       <div>

@@ -6,6 +6,8 @@ import Button from "../../../components/UI/Button";
 import { dialogs } from "../../../utils/dialogs";
 import { Upload, X } from "lucide-react";
 import projectAPI, { Project, ProjectCreateData } from "@/api/core/project";
+import categoryAPI, { Category } from "@/api/core/category";
+import CategorySelect from "@/components/Selects/Category";
 
 interface ProjectFormDialogProps {
   isOpen: boolean;
@@ -20,7 +22,7 @@ type FormData = {
   title: string;
   slug: string;
   description: string;
-  project_type: string;
+  project_type: number | undefined;
   demo_url: string;
   source_code_url: string;
   technologies: string;
@@ -49,6 +51,7 @@ const ProjectFormDialog: React.FC<ProjectFormDialogProps> = ({
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [categories, setCategories] = useState<Category[]>([]);
 
   const {
     register,
@@ -62,7 +65,7 @@ const ProjectFormDialog: React.FC<ProjectFormDialogProps> = ({
       title: "",
       slug: "",
       description: "",
-      project_type: "web",
+      project_type: undefined,
       demo_url: "",
       source_code_url: "",
       technologies: "",
@@ -83,6 +86,7 @@ const ProjectFormDialog: React.FC<ProjectFormDialogProps> = ({
 
   const title = watch("title");
   const slug = watch("slug");
+  const categoryId = watch("project_type");
 
   // Auto-generate slug from title (only in add mode or if slug is empty)
   useEffect(() => {
@@ -95,6 +99,17 @@ const ProjectFormDialog: React.FC<ProjectFormDialogProps> = ({
     }
   }, [title, mode, setValue, slug]);
 
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const response = await categoryAPI.list();
+        setCategories(response.results);
+      } catch (error) {}
+    };
+
+    loadCategories();
+  }, [projectId]);
+
   // Populate form when editing
   useEffect(() => {
     if (initialData) {
@@ -102,7 +117,7 @@ const ProjectFormDialog: React.FC<ProjectFormDialogProps> = ({
         title: initialData.title || "",
         slug: initialData.slug || "",
         description: initialData.description || "",
-        project_type: initialData.project_type || "web",
+        project_type: initialData.project_type?.id || undefined,
         demo_url: initialData.demo_url || "",
         source_code_url: initialData.source_code_url || "",
         technologies: initialData.technologies_list?.join(", ") || "",
@@ -184,7 +199,7 @@ const ProjectFormDialog: React.FC<ProjectFormDialogProps> = ({
         title: data.title,
         slug: data.slug,
         description: data.description,
-        project_type: data.project_type,
+        project_type: data.project_type || undefined,
         demo_url: data.demo_url || undefined,
         source_code_url: data.source_code_url || undefined,
         technologies: data.technologies,
@@ -299,21 +314,12 @@ const ProjectFormDialog: React.FC<ProjectFormDialogProps> = ({
               >
                 Project Type
               </label>
-              <select
-                {...register("project_type")}
-                className="compact-input w-full border rounded-md"
-                style={{
-                  backgroundColor: "var(--card-bg)",
-                  borderColor: "var(--border-color)",
-                  color: "var(--sidebar-text)",
+              <CategorySelect
+                value={categoryId ? categoryId : null}
+                onChange={(categoryId: number | null, category?: Category) => {
+                  setValue("project_type", categoryId || undefined);
                 }}
-              >
-                <option value="web">Web Development</option>
-                <option value="mobile">Mobile Development</option>
-                <option value="software">Desktop Development</option>
-                <option value="design">Design</option>
-                <option value="other">Other</option>
-              </select>
+              />
             </div>
 
             {/* Technologies */}
