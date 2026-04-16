@@ -1,4 +1,4 @@
-// src/api/profile.ts
+// src/api/core/profile.ts
 import { apiClient } from "@/lib/fetcher";
 
 export interface Profile {
@@ -25,7 +25,8 @@ export interface ProfileCreateData {
   title: string;
   bio: string;
   profile_image?: File | null;
-  resume?: string | null; // URL string
+  resume?: string | null;      // URL string
+  resume_file?: File | null;   // New file upload field
   email: string;
   phone?: string;
   address?: string;
@@ -57,6 +58,8 @@ class ProfileAPI {
         if (value !== undefined && value !== null) {
           if (key === 'profile_image' && value instanceof File) {
             formData.append('profile_image', value);
+          } else if (key === 'resume_file' && value instanceof File) {
+            formData.append('resume_file', value);
           } else {
             formData.append(key, String(value));
           }
@@ -80,6 +83,8 @@ class ProfileAPI {
         if (value !== undefined && value !== null) {
           if (key === 'profile_image' && value instanceof File) {
             formData.append('profile_image', value);
+          } else if (key === 'resume_file' && value instanceof File) {
+            formData.append('resume_file', value);
           } else {
             formData.append(key, String(value));
           }
@@ -103,6 +108,8 @@ class ProfileAPI {
         if (value !== undefined && value !== null) {
           if (key === 'profile_image' && value instanceof File) {
             formData.append('profile_image', value);
+          } else if (key === 'resume_file' && value instanceof File) {
+            formData.append('resume_file', value);
           } else {
             formData.append(key, String(value));
           }

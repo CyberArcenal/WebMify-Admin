@@ -1,10 +1,11 @@
 // src/pages/profile/components/ProfileFormDialog.tsx
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Modal from "../../../components/UI/Modal";
 import Button from "../../../components/UI/Button";
 import { dialogs } from "../../../utils/dialogs";
 import profileAPI, { Profile, ProfileUpdateData } from "@/api/core/profile";
+import DragDropFileInput from "./DragDropFileInput";
 
 interface ProfileFormDialogProps {
   isOpen: boolean;
@@ -23,8 +24,8 @@ type FormData = {
   github_url: string;
   linkedin_url: string;
   twitter_url: string;
-  resume: string;
-  profile_image: FileList;
+  resume: string;           // URL field
+  // We'll handle files separately, not in react-hook-form
 };
 
 const ProfileFormDialog: React.FC<ProfileFormDialogProps> = ({
@@ -33,6 +34,9 @@ const ProfileFormDialog: React.FC<ProfileFormDialogProps> = ({
   onClose,
   onSuccess,
 }) => {
+  const [selectedProfileImage, setSelectedProfileImage] = useState<File | null>(null);
+  const [selectedResumeFile, setSelectedResumeFile] = useState<File | null>(null);
+
   const {
     register,
     handleSubmit,
@@ -67,6 +71,9 @@ const ProfileFormDialog: React.FC<ProfileFormDialogProps> = ({
         twitter_url: initialData.twitter_url || "",
         resume: initialData.resume_url || "",
       });
+      // Reset file selections when dialog opens with new data
+      setSelectedProfileImage(null);
+      setSelectedResumeFile(null);
     } else {
       reset();
     }
@@ -92,9 +99,15 @@ const ProfileFormDialog: React.FC<ProfileFormDialogProps> = ({
         resume: data.resume || undefined,
       };
 
+      // Handle resume file if present (will override URL)
+      if (selectedResumeFile) {
+        payload.resume_file = selectedResumeFile;
+        delete payload.resume; // prefer uploaded file
+      }
+
       // Handle profile image if present
-      if (data.profile_image && data.profile_image.length > 0) {
-        payload.profile_image = data.profile_image[0];
+      if (selectedProfileImage) {
+        payload.profile_image = selectedProfileImage;
       }
 
       await profileAPI.patch(initialData.id, payload);
@@ -122,10 +135,7 @@ const ProfileFormDialog: React.FC<ProfileFormDialogProps> = ({
           </h4>
 
           <div>
-            <label
-              className="block text-sm font-medium mb-1"
-              style={{ color: "var(--sidebar-text)" }}
-            >
+            <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
               Full Name *
             </label>
             <input
@@ -137,16 +147,11 @@ const ProfileFormDialog: React.FC<ProfileFormDialogProps> = ({
                 color: "var(--sidebar-text)",
               }}
             />
-            {errors.name && (
-              <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>
-            )}
+            {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>}
           </div>
 
           <div>
-            <label
-              className="block text-sm font-medium mb-1"
-              style={{ color: "var(--sidebar-text)" }}
-            >
+            <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
               Title *
             </label>
             <input
@@ -158,18 +163,11 @@ const ProfileFormDialog: React.FC<ProfileFormDialogProps> = ({
                 color: "var(--sidebar-text)",
               }}
             />
-            {errors.title && (
-              <p className="text-xs text-red-500 mt-1">
-                {errors.title.message}
-              </p>
-            )}
+            {errors.title && <p className="text-xs text-red-500 mt-1">{errors.title.message}</p>}
           </div>
 
           <div>
-            <label
-              className="block text-sm font-medium mb-1"
-              style={{ color: "var(--sidebar-text)" }}
-            >
+            <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
               Bio
             </label>
             <textarea
@@ -192,10 +190,7 @@ const ProfileFormDialog: React.FC<ProfileFormDialogProps> = ({
           </h4>
 
           <div>
-            <label
-              className="block text-sm font-medium mb-1"
-              style={{ color: "var(--sidebar-text)" }}
-            >
+            <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
               Email *
             </label>
             <input
@@ -208,18 +203,11 @@ const ProfileFormDialog: React.FC<ProfileFormDialogProps> = ({
                 color: "var(--sidebar-text)",
               }}
             />
-            {errors.email && (
-              <p className="text-xs text-red-500 mt-1">
-                {errors.email.message}
-              </p>
-            )}
+            {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email.message}</p>}
           </div>
 
           <div>
-            <label
-              className="block text-sm font-medium mb-1"
-              style={{ color: "var(--sidebar-text)" }}
-            >
+            <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
               Phone
             </label>
             <input
@@ -234,10 +222,7 @@ const ProfileFormDialog: React.FC<ProfileFormDialogProps> = ({
           </div>
 
           <div>
-            <label
-              className="block text-sm font-medium mb-1"
-              style={{ color: "var(--sidebar-text)" }}
-            >
+            <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
               Address
             </label>
             <input
@@ -259,10 +244,7 @@ const ProfileFormDialog: React.FC<ProfileFormDialogProps> = ({
           </h4>
 
           <div>
-            <label
-              className="block text-sm font-medium mb-1"
-              style={{ color: "var(--sidebar-text)" }}
-            >
+            <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
               GitHub URL
             </label>
             <input
@@ -277,10 +259,7 @@ const ProfileFormDialog: React.FC<ProfileFormDialogProps> = ({
           </div>
 
           <div>
-            <label
-              className="block text-sm font-medium mb-1"
-              style={{ color: "var(--sidebar-text)" }}
-            >
+            <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
               LinkedIn URL
             </label>
             <input
@@ -295,10 +274,7 @@ const ProfileFormDialog: React.FC<ProfileFormDialogProps> = ({
           </div>
 
           <div>
-            <label
-              className="block text-sm font-medium mb-1"
-              style={{ color: "var(--sidebar-text)" }}
-            >
+            <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
               Twitter URL
             </label>
             <input
@@ -313,21 +289,19 @@ const ProfileFormDialog: React.FC<ProfileFormDialogProps> = ({
           </div>
         </div>
 
-        {/* Resume & Profile Image */}
+        {/* Resume & Profile Image with Drag & Drop */}
         <div className="space-y-3">
           <h4 className="font-medium text-[var(--sidebar-text)] border-b pb-1">
             Resume & Profile Image
           </h4>
 
           <div>
-            <label
-              className="block text-sm font-medium mb-1"
-              style={{ color: "var(--sidebar-text)" }}
-            >
-              Resume URL
+            <label className="block text-sm font-medium mb-1" style={{ color: "var(--sidebar-text)" }}>
+              Resume URL (optional)
             </label>
             <input
               {...register("resume")}
+              placeholder="https://example.com/resume.pdf"
               className="compact-input w-full border rounded-md"
               style={{
                 backgroundColor: "var(--card-bg)",
@@ -335,32 +309,32 @@ const ProfileFormDialog: React.FC<ProfileFormDialogProps> = ({
                 color: "var(--sidebar-text)",
               }}
             />
-          </div>
-
-          <div>
-            <label
-              className="block text-sm font-medium mb-1"
-              style={{ color: "var(--sidebar-text)" }}
-            >
-              Profile Image
-            </label>
-            <input
-              type="file"
-              accept="image/*"
-              {...register("profile_image")}
-              className="compact-input w-full border rounded-md"
-              style={{
-                backgroundColor: "var(--card-bg)",
-                borderColor: "var(--border-color)",
-                color: "var(--sidebar-text)",
-              }}
-            />
-            {initialData?.profile_image_url && (
+            {initialData?.resume_url && !selectedResumeFile && (
               <p className="text-xs text-[var(--text-secondary)] mt-1">
-                Current: {initialData.profile_image_url.split("/").pop()}
+                Current: <a href={initialData.resume_url} target="_blank" rel="noopener noreferrer" className="text-[var(--accent-blue)] hover:underline">{initialData.resume_url}</a>
               </p>
             )}
           </div>
+
+          <DragDropFileInput
+            label="Upload Resume (PDF, DOC, etc.)"
+            accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            onFileSelect={setSelectedResumeFile}
+            currentFileUrl={initialData?.resume_url}
+            currentFileName={initialData?.resume_url?.split('/').pop()}
+            icon="file"
+            helpText="Drag & drop or click to select"
+          />
+
+          <DragDropFileInput
+            label="Profile Image"
+            accept="image/*"
+            onFileSelect={setSelectedProfileImage}
+            currentFileUrl={initialData?.profile_image_url}
+            currentFileName={initialData?.profile_image_url?.split('/').pop()}
+            icon="image"
+            helpText="Drag & drop an image or click to select"
+          />
         </div>
 
         {/* Footer */}
@@ -372,13 +346,11 @@ const ProfileFormDialog: React.FC<ProfileFormDialogProps> = ({
               if (
                 !(await dialogs.confirm({
                   title: "Cancel Form",
-                  message:
-                    "Are you sure do you want to cancel this form your data may be loss?.",
+                  message: "Are you sure you want to cancel? Any unsaved changes will be lost.",
                   confirmText: "Cancel Anyway",
                 }))
               )
                 return;
-
               onClose();
             }}
           >
